@@ -1,0 +1,31 @@
+.animation-name-dialog {
+  width: min(420px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 28px;
+  overflow: auto;
+  color: var(--ink, #27332f);
+  background: #fdfefb;
+  border: 1px solid #e2e8de;
+  border-radius: 18px;
+  box-shadow: 0 24px 80px #1d3b2e30;
+}
+.animation-name-dialog::backdrop { background: #1d302845; backdrop-filter: blur(4px); }
+.animation-name-close { position: absolute; top: 16px; right: 16px; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; color: #819083; background: transparent; }
+.animation-name-close:hover { color: var(--teal, #237d65); background: #edf5ef; }
+.animation-name-icon { display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 18px; border: 1px solid #dcebe0; border-radius: 13px; color: var(--teal, #237d65); background: #edf5ef; }
+.animation-name-dialog h2 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: -.4px; line-height: 1.5; }
+.animation-name-description { margin: 8px 0 0; color: #7b887d; font-size: 12px; line-height: 1.7; }
+.animation-name-source { margin: 7px 0 24px; overflow: hidden; color: #95a091; font-size: 11px; line-height: 1.6; text-overflow: ellipsis; white-space: nowrap; }
+.animation-name-dialog form > label { display: block; margin-bottom: 8px; color: #617467; font-size: 12px; font-weight: 600; }
+.animation-name-dialog form > input { width: 100%; height: 42px !important; padding: 10px 12px !important; font-size: 13px !important; }
+.animation-name-preview { display: flex; align-items: baseline; gap: 10px; margin-top: 11px; padding: 11px 12px; border: 1px solid #e7ece2; border-radius: 8px; background: #f3f7f0; font-size: 11px; line-height: 1.7; }
+.animation-name-preview > span { flex-shrink: 0; color: #8a978a; }
+.animation-name-preview > strong { min-width: 0; color: #42705a; font-size: 12px; font-weight: 500; overflow-wrap: anywhere; }
+.animation-name-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 25px; }
+.animation-name-actions .button { min-height: 38px; }
+@media (max-width: 480px) {
+  .animation-name-dialog { padding: 24px 20px; border-radius: 15px; }
+  .animation-name-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .animation-name-actions .button { justify-content: center; padding-right: 10px; padding-left: 10px; }
+}

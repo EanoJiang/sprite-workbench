@@ -1,0 +1,844 @@
+/* Pixel red / blue / cream visual language.
+ *
+ * This file intentionally lives after the component styles so the theme can be
+ * changed without touching the workbench behaviour or each panel's layout.
+ */
+:root {
+  --page: #fffaf2;
+  --white: #ffffff;
+  --ink: #17315f;
+  --muted: #756a5a;
+  --border: #c9b98f;
+  --teal: #2455a8;
+  --teal-deep: #173b7b;
+  --teal-pale: #e7eefb;
+  --amber: #d84c43;
+  --pixel-blue: #2455a8;
+  --pixel-blue-dark: #17315f;
+  --pixel-red: #d84c43;
+  --pixel-red-dark: #a93438;
+  --pixel-cream: #fffaf2;
+  --pixel-line: #d8c8a2;
+  font-family: "Courier New", "Microsoft YaHei", monospace;
+  color: var(--ink);
+  background: var(--page);
+}
+
+html,
+body {
+  background: var(--page);
+}
+
+body {
+  color: var(--ink);
+  font-family: "Courier New", "Microsoft YaHei", monospace;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* Keep the workbench canvas cream while every numbered step is a clean sheet. */
+.app,
+.workspace,
+.workbench-panel {
+  background: var(--page);
+}
+
+.app-header,
+.workspace-tab-bar {
+  background: var(--pixel-cream);
+  border-color: var(--pixel-blue-dark);
+}
+
+.workspace-tab-bar {
+  border-bottom-width: 2px;
+}
+
+.workspace-tab {
+  color: #6e665a;
+}
+
+.workspace-tab:hover,
+.workspace-tab[aria-selected='true'] {
+  color: var(--pixel-blue);
+}
+
+.workspace-tab[aria-selected='true']::after {
+  height: 4px;
+  border-radius: 0;
+  background: var(--pixel-red);
+}
+
+.workspace-tab .tab-label {
+  border: 1px solid var(--pixel-blue);
+  border-radius: 0;
+  background: var(--pixel-blue);
+  color: #fff;
+}
+
+.brand-mark {
+  border: 2px solid var(--pixel-blue-dark);
+  border-radius: 0;
+  background: var(--pixel-red);
+  box-shadow: 3px 3px 0 var(--pixel-blue-dark);
+}
+
+.hero .eyebrow,
+.hero h1 span {
+  color: var(--pixel-red);
+}
+
+.hero .eyebrow::before {
+  border-radius: 0;
+  background: var(--pixel-blue);
+}
+
+.hero h1,
+.section-title h2,
+.project-save-panel h2 {
+  color: var(--pixel-blue-dark);
+}
+
+.hero-actions > .button.primary,
+.button.primary {
+  border-color: var(--pixel-red-dark);
+  background: var(--pixel-red);
+  color: #fff;
+  box-shadow: 3px 3px 0 var(--pixel-blue-dark);
+}
+
+.button.primary:hover:not(:disabled) {
+  border-color: var(--pixel-red-dark);
+  background: var(--pixel-red-dark);
+  box-shadow: 2px 2px 0 var(--pixel-blue-dark);
+}
+
+.button.secondary {
+  border-color: var(--pixel-blue);
+  background: var(--teal-pale);
+  color: var(--pixel-blue-dark);
+}
+
+.button.secondary:hover:not(:disabled) {
+  border-color: var(--pixel-blue-dark);
+  background: #d4e2fb;
+}
+
+.button.ghost {
+  color: var(--pixel-blue);
+}
+
+.button.ghost:hover:not(:disabled) {
+  background: #f6e9d4;
+  border-color: var(--pixel-blue);
+}
+
+.button,
+.icon-button,
+.badge,
+.status-chip,
+.section-number,
+.step,
+.card,
+.source-bar,
+.workflow-nav,
+.notice,
+.modal,
+.modal-footer,
+.project-library,
+.project-library-icon,
+.project-library-count,
+.frame-card,
+.empty-state,
+.key-color-control,
+.segmented,
+.segmented button,
+.input-with-suffix,
+.version-tag {
+  border-radius: 0;
+}
+
+.button,
+.icon-button {
+  border-width: 2px;
+}
+
+.icon-button {
+  border-color: var(--pixel-line);
+  color: var(--pixel-blue);
+  background: #fff;
+}
+
+.icon-button:hover {
+  border-color: var(--pixel-blue);
+  background: #f6e9d4;
+}
+
+/* Eight numbered sections each render as an opaque white work sheet. */
+.workspace-section {
+  background: #fff;
+  border: 2px solid var(--pixel-blue-dark);
+  box-shadow: 4px 4px 0 var(--pixel-line);
+  padding: 22px;
+}
+
+.workspace-section > .section-heading {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.section-number {
+  color: #fff;
+  background: var(--pixel-red);
+  border: 2px solid var(--pixel-blue-dark);
+}
+
+.section-title p,
+.hero p,
+.field-hint,
+.hint,
+.section-footer,
+.app-footer {
+  color: var(--muted);
+}
+
+.workflow-nav {
+  border: 2px solid var(--pixel-blue-dark);
+  background: #fff;
+  box-shadow: 4px 4px 0 var(--pixel-line);
+}
+
+.step {
+  border-radius: 0;
+}
+
+.step:hover,
+.step.active {
+  background: #f9e6d5;
+}
+
+.step.active .step-number {
+  background: var(--pixel-red);
+  color: #fff;
+}
+
+.step.complete .step-number {
+  color: var(--pixel-blue-dark);
+  background: var(--teal-pale);
+  border: 2px solid var(--pixel-blue);
+}
+
+.step.active .step-copy strong,
+.step-copy strong {
+  color: var(--pixel-blue-dark);
+}
+
+.step-copy span,
+.step-arrow {
+  color: #8c806d;
+}
+
+.card,
+.project-library,
+.tuner-editor-card {
+  border-color: var(--pixel-blue-dark);
+  box-shadow: 3px 3px 0 var(--pixel-line);
+}
+
+.source-bar,
+.settings-grid,
+.selection-toolbar,
+.review-actions,
+.animation-layout,
+.compression-source-bar,
+.compression-metrics,
+.compression-preview-card,
+.compression-export-bar,
+.project-save-panel {
+  background: #fff;
+}
+
+.source-bar,
+.panel-heading svg,
+.setting-icon,
+.file-icon,
+.export-icon {
+  color: var(--pixel-blue);
+}
+
+.file-icon,
+.export-icon {
+  background: var(--teal-pale);
+  border-color: var(--pixel-blue);
+  border-radius: 0;
+}
+
+.badge {
+  color: var(--pixel-blue-dark);
+  background: var(--pixel-cream);
+  border-color: var(--pixel-blue);
+}
+
+.badge.sage {
+  color: var(--pixel-red-dark);
+  background: #f9e4d8;
+  border-color: var(--pixel-red);
+}
+
+.status-chip {
+  color: var(--pixel-blue-dark);
+  background: var(--teal-pale);
+  border: 1px solid var(--pixel-blue);
+}
+
+.status-chip.amber,
+.notice.warning {
+  color: var(--pixel-red-dark);
+  background: #fae5d8;
+  border-color: var(--pixel-red);
+}
+
+.notice {
+  color: var(--pixel-blue-dark);
+  background: #edf3fc;
+  border-color: var(--pixel-blue);
+}
+
+input:not([type='range']):not([type='checkbox']):not([type='file']):not([type='color']),
+select,
+textarea {
+  border-color: var(--pixel-blue);
+  border-radius: 0;
+  background: #fff;
+  color: var(--pixel-blue-dark);
+}
+
+input:not([type='range']):not([type='checkbox']):not([type='file']):focus,
+select:focus,
+textarea:focus {
+  border-color: var(--pixel-red);
+  box-shadow: 3px 3px 0 #f1c8b8;
+}
+
+input[type='range'] {
+  background: #c9d7ec;
+  accent-color: var(--pixel-red);
+}
+
+input[type='checkbox'] {
+  accent-color: var(--pixel-red);
+}
+
+.segmented {
+  border-color: var(--pixel-blue);
+  background: #edf3fc;
+}
+
+.segmented button.active {
+  background: var(--pixel-blue);
+  color: #fff;
+  box-shadow: 2px 2px 0 var(--pixel-blue-dark);
+}
+
+.switch-field input:checked {
+  background: var(--pixel-red);
+}
+
+.media-stage,
+.large-animation-stage {
+  border-radius: 0;
+  border: 2px solid var(--pixel-blue-dark);
+}
+
+.media-stage {
+  background: var(--pixel-blue-dark);
+}
+
+.range-panel,
+.cleanup-controls,
+.animation-settings {
+  border-radius: 0;
+  border-color: var(--pixel-blue);
+  background: #f6f0e3;
+}
+
+.timeline-selection {
+  border-color: var(--pixel-red);
+}
+
+.frame-card:hover,
+.frame-card.selected,
+.frame-card.playing {
+  border-color: var(--pixel-red);
+  background: #fff7ef;
+}
+
+.frame-card.playing {
+  box-shadow: 2px 2px 0 var(--pixel-blue-dark);
+}
+
+.project-save-panel {
+  border: 2px solid var(--pixel-blue-dark);
+  box-shadow: 4px 4px 0 var(--pixel-line);
+}
+
+.project-save-panel .eyebrow {
+  color: var(--pixel-red);
+}
+
+.toast {
+  border: 2px solid var(--pixel-cream);
+  border-radius: 0;
+  background: var(--pixel-blue-dark);
+  box-shadow: 4px 4px 0 var(--pixel-red);
+}
+
+.modal-backdrop {
+  background: #17315f99;
+  backdrop-filter: none;
+}
+
+.modal {
+  border: 2px solid var(--pixel-blue-dark);
+  box-shadow: 6px 6px 0 var(--pixel-red);
+}
+
+.modal-footer {
+  background: var(--pixel-cream);
+  border-top-color: var(--pixel-blue);
+}
+
+.drop-overlay {
+  border-color: var(--pixel-red);
+  border-radius: 0;
+  background: #f9e5d7f2;
+  color: var(--pixel-blue-dark);
+  backdrop-filter: none;
+}
+
+.app-footer {
+  border-top-color: var(--pixel-blue);
+}
+
+/* Shared component accents: keep secondary workspaces in the same palette. */
+.source-header {
+  border-top-color: var(--pixel-blue-dark);
+  border-bottom-color: var(--pixel-blue-dark);
+  color: var(--pixel-blue-dark);
+  background: var(--pixel-cream);
+}
+
+.source-header-brand small,
+.source-header-clear,
+.source-header-clear:hover:not(:disabled) {
+  color: var(--pixel-red);
+}
+
+.source-header-logo circle:first-of-type {
+  fill: var(--pixel-red);
+}
+
+.source-header-logo circle:last-of-type {
+  fill: var(--pixel-blue);
+}
+
+.source-header-clear {
+  border-color: var(--pixel-red);
+  border-radius: 0;
+  background: #fff;
+}
+
+.source-header-clear:hover:not(:disabled) {
+  background: #fae5d8;
+}
+
+.source-header-strip {
+  border-color: var(--pixel-blue-dark);
+  border-radius: 0;
+  background: #fff;
+}
+
+.source-header-strip > div {
+  border-left-color: var(--pixel-line);
+}
+
+.source-header-strip dt,
+.source-header-help {
+  color: var(--muted);
+}
+
+.project-library-title p,
+.project-directory-field > span,
+.project-directory-hint,
+.project-card-copy p,
+.project-card-copy time,
+.project-library-message {
+  color: var(--muted);
+}
+
+.project-library-count,
+.project-refresh-button,
+.project-card,
+.project-library-message {
+  border-radius: 0;
+  border-color: var(--pixel-line);
+  background: #fff;
+}
+
+.project-library-count {
+  color: var(--pixel-blue-dark);
+  border-color: var(--pixel-blue);
+}
+
+.project-refresh-button {
+  color: var(--pixel-blue);
+}
+
+.project-refresh-button:hover:not(:disabled) {
+  border-color: var(--pixel-red);
+  background: #fae5d8;
+}
+
+.project-card {
+  border-width: 2px;
+}
+
+.project-thumbnail {
+  border-radius: 0;
+  border-color: var(--pixel-blue);
+  background-image: linear-gradient(45deg, #e7eefb 25%, transparent 25%), linear-gradient(-45deg, #e7eefb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e7eefb 75%), linear-gradient(-45deg, transparent 75%, #e7eefb 75%);
+}
+
+.ai-model-panel,
+.compression-settings,
+.tuner-editor-card,
+.smoothing-controls,
+.loop-correction-controls {
+  border-color: var(--pixel-blue-dark);
+  border-radius: 0;
+  background: #fff;
+}
+
+.engine-option.active,
+.tuner-session-tabs > button.active,
+.loop-correction-preview-mode.corrected,
+.compression-ready {
+  color: var(--pixel-blue-dark);
+  border-color: var(--pixel-blue);
+  background: var(--teal-pale);
+}
+
+.compression-source-icon,
+.tuner-transfer-icon,
+.tuner-tool-mark,
+.animation-name-icon {
+  color: var(--pixel-blue);
+  border-color: var(--pixel-blue);
+  border-radius: 0;
+  background: var(--teal-pale);
+}
+
+.compression-panel-heading > svg,
+.compression-panel-heading > h3,
+.compression-source-copy > strong,
+.tuner-source-summary strong,
+.tuner-editor-title > strong,
+.tuner-launch-state h2 {
+  color: var(--pixel-blue-dark);
+}
+
+.compression-preview-card,
+.compression-metrics,
+.compression-source-bar,
+.tuner-transfer-card,
+.tuner-editor-toolbar,
+.tuner-editor-footer,
+.tuner-session-tabs,
+.tuner-launch-state {
+  background: #fff;
+}
+
+.compression-image-stage,
+.compression-thumbnail,
+.tuner-session-tabs > button,
+.tuner-editor-actions > .icon-button {
+  border-radius: 0;
+  border-color: var(--pixel-line);
+}
+
+.compression-thumbnail.active {
+  border-color: var(--pixel-red);
+  box-shadow: 2px 2px 0 var(--pixel-blue-dark);
+  background: #fff7ef;
+  color: var(--pixel-red-dark);
+}
+
+.compression-playback-buttons > .compression-play {
+  border-radius: 0;
+  border-color: var(--pixel-red);
+  background: var(--pixel-red);
+}
+
+.tuner-editor-surface,
+.tuner-iframe {
+  border-color: var(--pixel-blue-dark);
+}
+
+/* High-specificity review/workbench states. */
+.processing-bar.card {
+  border-color: var(--pixel-blue);
+  background: #edf3fc;
+}
+
+.processing-bar progress,
+.processing-bar progress::-webkit-progress-bar {
+  background: #c9d7ec;
+}
+
+.processing-bar progress::-webkit-progress-value {
+  background: var(--pixel-red);
+}
+
+#step-5 .animation-card > .panel-heading > .badge {
+  color: var(--pixel-blue-dark);
+  border-color: var(--pixel-blue);
+  background: var(--teal-pale);
+}
+
+#step-5 .animation-controls .play-button,
+.animation-controls .play-button {
+  color: #fff;
+  background: var(--pixel-red);
+  border-color: var(--pixel-red-dark);
+  border-radius: 0;
+}
+
+#step-5 .frame-card.selected {
+  border-color: var(--pixel-red) !important;
+  background: #fff7ef;
+}
+
+#step-5 .frame-card.playing {
+  border-color: var(--pixel-blue) !important;
+  box-shadow: 0 0 0 2px var(--pixel-blue) !important;
+}
+
+#step-5 .frame-checkbox > input:checked + span {
+  background: var(--pixel-red);
+  border-color: var(--pixel-red-dark);
+}
+
+.review-actions strong,
+.review-actions p,
+.animation-controls > span,
+.animation-controls > span > span {
+  color: var(--pixel-blue-dark);
+}
+
+.animation-stage-stats,
+.large-animation-stage .stage-label {
+  color: var(--pixel-blue-dark);
+  border-color: var(--pixel-blue);
+}
+
+.stage-play-button {
+  color: var(--pixel-red);
+  border-color: var(--pixel-red);
+  border-radius: 0;
+}
+
+.sequence-heading > span:first-child,
+.sequence-heading svg,
+.sequence-heading > span:last-child,
+.sequence-frame span {
+  color: var(--pixel-blue-dark);
+}
+
+.sequence-heading strong {
+  color: #fff;
+  background: var(--pixel-blue);
+  border-radius: 0;
+}
+
+.sequence-frame,
+.sequence-frame.active {
+  border-color: var(--pixel-blue);
+  background: var(--teal-pale);
+}
+
+.sequence-frame.active {
+  box-shadow: 0 0 0 2px var(--pixel-red);
+}
+
+/* Switch-inspired polish: bright surfaces, friendly rounded controls, and bold Joy-Con accents. */
+.source-header,
+.app-header,
+.workspace-tab-bar {
+  border-bottom-width: 1px;
+}
+
+.source-header {
+  border-top: 4px solid var(--pixel-red);
+}
+
+.source-header-logo rect {
+  rx: 10;
+  fill: #fff;
+  stroke: var(--pixel-blue-dark);
+}
+
+.source-header-strip,
+.workflow-nav,
+.workspace-section,
+.card,
+.project-library,
+.project-save-panel,
+.modal,
+.tuner-editor-card {
+  border-radius: 14px;
+  box-shadow: 0 4px 0 #dbe4f2;
+}
+
+.workspace-section {
+  border-width: 1px;
+  border-top: 4px solid var(--pixel-blue);
+}
+
+#step-1,
+#step-2,
+#step-3,
+#step-4,
+#step-5,
+#step-6,
+#step-7,
+#step-8 {
+  background: #fff;
+}
+
+.workflow-nav {
+  border-width: 1px;
+}
+
+.step,
+.button,
+.icon-button,
+.badge,
+.status-chip,
+.keyboard-key,
+.project-library-count,
+.project-refresh-button,
+.project-card,
+.project-thumbnail,
+.source-header-clear,
+.source-header-strip,
+.file-icon,
+.export-icon,
+.notice,
+.segmented,
+.segmented button,
+.key-color-control,
+.input-with-suffix,
+.compression-input-suffix,
+.compression-image-stage,
+.compression-thumbnail,
+.tuner-session-tabs > button,
+.tuner-editor-actions > .icon-button {
+  border-radius: 10px;
+}
+
+.button.primary {
+  border-radius: 999px;
+}
+
+.button.secondary,
+.button.ghost {
+  border-radius: 999px;
+}
+
+.step.active {
+  background: #e9f1ff;
+}
+
+.step.active .step-number {
+  border-radius: 50%;
+}
+
+.badge,
+.status-chip,
+.keyboard-key,
+.project-library-count,
+.tab-label {
+  border-radius: 999px;
+}
+
+.brand-mark {
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--pixel-blue-dark);
+}
+
+.media-stage,
+.large-animation-stage,
+.image-viewport,
+.animation-viewport {
+  border-radius: 12px;
+}
+
+.source-header-clear,
+.stage-play-button,
+.animation-controls .play-button,
+.compression-playback-buttons > .compression-play {
+  border-radius: 50%;
+}
+
+.processing-icon {
+  color: var(--pixel-blue);
+  background: var(--teal-pale);
+  border-radius: 10px;
+}
+
+.processing-copy strong,
+.processing-copy p,
+.preview-bottom-bar > span,
+.preview-bottom-bar > span svg,
+.animation-card > .panel-heading > span,
+.animation-frame-label,
+.fps-control,
+.frame-list > .pane-heading h3,
+.frame-list > .pane-heading h3 > span,
+.frame-meta strong,
+.frame-meta span:last-child,
+.animation-settings .field-row > span,
+.animation-settings .field-row > span > strong {
+  color: var(--pixel-blue-dark);
+}
+
+.animation-frame-label {
+  border-color: var(--pixel-blue);
+}
+
+.animation-viewport.dark .animation-frame-label,
+.large-animation-stage.dark .animation-stage-stats {
+  color: #fff;
+  background: #17315fd9;
+  border-color: var(--pixel-blue);
+}
+
+.fps-control {
+  border-top-color: var(--pixel-line);
+}
+
+.animation-settings .sequence-controls {
+  border-top-color: var(--pixel-line);
+}
+
+@media (max-width: 700px) {
+  .workspace-section {
+    padding: 14px;
+    box-shadow: 3px 3px 0 var(--pixel-line);
+  }
+}
+

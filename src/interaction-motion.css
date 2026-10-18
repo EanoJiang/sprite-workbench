@@ -1,0 +1,166 @@
+/* Interaction-only motion layer. Base colors and surfaces come from styles.css. */
+:root {
+  --motion-ease: cubic-bezier(.2, .9, .25, 1.18);
+  --motion-spring: cubic-bezier(.16, 1.35, .3, 1);
+}
+
+@keyframes motion-card-in {
+  from { opacity: 0; transform: translateY(12px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes motion-modal-in {
+  from { opacity: 0; transform: translateY(16px) scale(.94) rotate(-.8deg); }
+  70% { transform: translateY(-2px) scale(1.01) rotate(.15deg); }
+  to { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+}
+@keyframes motion-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes motion-tab-glow {
+  0%, 100% { opacity: .72; box-shadow: 0 0 6px #237d6555; }
+  50% { opacity: 1; box-shadow: 0 0 16px #237d65aa; }
+}
+@keyframes motion-step-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 1px #237d65, 0 0 0 #237d6500; }
+  50% { box-shadow: inset 0 0 0 1px #237d65, 0 0 14px #237d6544; }
+}
+@keyframes motion-card-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px #579762, 0 4px 0 #385d3d; }
+  50% { box-shadow: 0 0 0 3px #79a45f66, 0 4px 0 #385d3d, 0 0 20px #57976244; }
+}
+@keyframes motion-active-card {
+  0%, 100% { transform: translateY(-2px) rotate(-.4deg); }
+  50% { transform: translateY(-5px) rotate(.4deg); }
+}
+@keyframes motion-button-glint {
+  from { transform: translateX(-120%) rotate(10deg); }
+  to { transform: translateX(120%) rotate(10deg); }
+}
+@keyframes motion-play-breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2px) scale(1.035); }
+}
+@keyframes motion-toast-in {
+  from { opacity: 0; transform: translate(-50%, 18px) scale(.92); }
+  70% { transform: translate(-50%, -2px) scale(1.015); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+@keyframes motion-frame-deal {
+  from { opacity: .35; transform: scale(.96) translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes motion-status-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: .85; }
+  50% { box-shadow: 0 0 0 4px #70a17b33; opacity: 1; }
+}
+@keyframes motion-progress-shimmer { to { background-position: -180% 0; } }
+@keyframes motion-drop-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes motion-drop-in {
+  from { opacity: 0; transform: scale(.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.button, .icon-button, .stage-play-button {
+  position: relative;
+  overflow: hidden;
+  transition: transform .16s var(--motion-ease), box-shadow .16s var(--motion-ease),
+    border-color .16s var(--motion-ease), background-color .16s var(--motion-ease),
+    color .16s var(--motion-ease);
+}
+.button::after, .icon-button::after, .stage-play-button::after {
+  content: '';
+  position: absolute;
+  inset: -70% -35%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(105deg, transparent 43%, #ffffff70 49%, transparent 55%);
+  transform: translateX(-90%) rotate(10deg);
+}
+.button:hover:not(:disabled)::after, .icon-button:hover:not(:disabled)::after,
+.stage-play-button:hover:not(:disabled)::after {
+  opacity: .8;
+  animation: motion-button-glint .55s var(--motion-ease) both;
+}
+.button:hover:not(:disabled), .icon-button:hover:not(:disabled) { transform: translateY(-2px); }
+.button:active:not(:disabled), .icon-button:active:not(:disabled),
+.stage-play-button:active:not(:disabled) {
+  transform: translateY(2px) scale(.97);
+  filter: saturate(1.08) brightness(.96);
+}
+
+.project-card { transform-origin: 50% 100%; transition: transform .2s var(--motion-ease), border-color .2s, box-shadow .2s; }
+.project-card:hover { transform: translateY(-4px) rotate(-.35deg); box-shadow: 0 7px 0 #263826, 0 12px 24px #20392522; }
+.project-card:active { transform: translateY(1px) scale(.985); }
+.step { transition: transform .18s var(--motion-ease), background .18s, box-shadow .18s; }
+.step:hover { transform: translateY(-2px); }
+.step:active { transform: translateY(1px) scale(.985); }
+.workspace-tab { transition: color .18s, transform .18s var(--motion-ease); }
+.workspace-tab:hover { transform: translateY(-1px); }
+.workspace-tab[aria-selected='true']::after { animation: motion-tab-glow 1.8s ease-in-out infinite; }
+.step.active { animation: motion-step-pulse 2.4s ease-in-out infinite; }
+
+.frame-card { transform-origin: 50% 100%; transition: transform .2s var(--motion-ease), border-color .2s, box-shadow .2s, background .2s; }
+.frame-card:nth-child(odd):hover { transform: translateY(-5px) rotate(-1deg); }
+.frame-card:nth-child(even):hover { transform: translateY(-5px) rotate(1deg); }
+.frame-card button.frame-thumb:active { transform: scale(.965); }
+.frame-card.selected { animation: motion-card-in .24s var(--motion-ease) both; }
+.frame-card.playing { animation: motion-card-pulse 1.15s ease-in-out infinite; }
+.sequence-frame { transition: transform .2s var(--motion-ease), border-color .2s, box-shadow .2s; }
+.sequence-frame:hover { transform: translateY(-5px) rotate(-1deg); z-index: 1; }
+.sequence-frame:active { transform: translateY(1px) scale(.96); }
+.sequence-frame.active { animation: motion-active-card .95s ease-in-out infinite; }
+/* Playback replaces the image node on every tick (the React key is the frame id).
+   Animating the image itself therefore restarts its opacity/scale animation on
+   every frame and produces a visible flash, especially at 12+ FPS. Keep the
+   playback surface stable and reserve motion for explicit user interactions. */
+.animation-viewport > img, .large-animation-stage > .animation-image {
+  animation: none;
+}
+
+.status-chip::before { animation: motion-status-pulse 1.6s ease-in-out infinite; }
+.status-chip .status-dot, .stage-label .status-dot { display: inline-block; animation: motion-status-pulse 1.6s ease-in-out infinite; }
+.processing-bar progress::-webkit-progress-value {
+  background-image: linear-gradient(90deg, #5b9f73, #8fba75, #5b9f73);
+  background-size: 180% 100%;
+  animation: motion-progress-shimmer 2.2s linear infinite;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  transition: transform .16s var(--motion-ease), box-shadow .16s var(--motion-ease);
+}
+input[type='range']::-webkit-slider-thumb:hover { transform: scale(1.14); box-shadow: 0 0 10px #237d6544; }
+input[type='range']::-webkit-slider-thumb:active { transform: scale(.9); }
+input[type='range']::-moz-range-thumb { transition: transform .16s var(--motion-ease), box-shadow .16s var(--motion-ease); }
+input[type='range']::-moz-range-thumb:hover { transform: scale(1.14); box-shadow: 0 0 10px #237d6544; }
+input[type='checkbox']:active, input[role='switch']:active { transform: scale(.9); }
+
+.animation-card, .frame-list, .animation-layout, .project-library, .workspace-section > .card {
+  animation: motion-card-in .45s var(--motion-ease) both;
+}
+.workspace-section:nth-of-type(2) > * { animation-delay: .04s; }
+.workspace-section:nth-of-type(3) > * { animation-delay: .08s; }
+.workspace-section:nth-of-type(4) > * { animation-delay: .12s; }
+.workspace-section:nth-of-type(5) > * { animation-delay: .16s; }
+.workspace-section:nth-of-type(6) > * { animation-delay: .20s; }
+.workspace-section:nth-of-type(7) > * { animation-delay: .24s; }
+.workspace-section:nth-of-type(8) > * { animation-delay: .28s; }
+
+.stage-play-button, .animation-controls .play-button { animation: motion-play-breathe 1.8s ease-in-out infinite; }
+.stage-play-button:hover, .animation-controls .play-button:hover { animation-play-state: paused; }
+.stage-play-button:hover:not(:disabled) { transform: translateY(-3px) rotate(-4deg) scale(1.08); }
+.modal-backdrop { animation: motion-backdrop-in .2s ease-out both; }
+.modal { transform-origin: 50% 65%; animation: motion-modal-in .34s var(--motion-ease) both; }
+.toast { animation: motion-toast-in .3s var(--motion-ease) both; }
+.drop-overlay { animation: motion-drop-in .22s var(--motion-spring) both; }
+.drop-overlay svg { animation: motion-drop-float 1.6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .frame-card.playing, .sequence-frame.active, .stage-play-button, .animation-controls .play-button,
+  .workspace-tab[aria-selected='true']::after, .step.active, .animation-viewport > img,
+  .large-animation-stage > .animation-image, .status-chip::before,
+  .status-chip .status-dot, .stage-label .status-dot,
+  .processing-bar progress::-webkit-progress-value, .drop-overlay svg { animation: none !important; }
+  .button:hover:not(:disabled)::after, .icon-button:hover:not(:disabled)::after,
+  .stage-play-button:hover:not(:disabled)::after { animation: none; }
+}

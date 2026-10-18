@@ -1,0 +1,11 @@
+.preview-export { margin-top: 11px; min-width: 0; }
+.preview-export-summary { display: flex; align-items: center; justify-content: space-between; gap: 9px; }
+.preview-export-summary > span { min-width: 0; font-size: 10px; color: #93a87d; line-height: 1.8; overflow-wrap: anywhere; }
+.preview-export-toggle { flex-shrink: 0; gap: 5px; padding: 5px 8px; font-size: 10px; min-height: 29px; border: 1px solid #e1e9d6; background: #fbfdf8; }
+.preview-export-toggle > svg:last-child { transition: transform .15s ease; }
+.preview-export-toggle > svg.is-open { transform: rotate(180deg); }
+.preview-export-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #cfddbf; }
+.preview-export-options[hidden] { display: none; }
+.preview-export-options > .button { justify-content: center; padding: 7px 8px; font-size: 11px; min-height: 34px; border-color: #e1e9d6; background: #f7faef; color: #6d8e56; }
+.preview-export-options > .button:hover:not(:disabled) { background: #edf4e2; border-color: #bed2a6; }
+@media (max-width: 700px) { .preview-export { margin-top: 12px; } .preview-export-summary > span { font-size: 11px; } .preview-export-toggle { min-height: 32px; font-size: 11px; } .preview-export-options > .button { min-height: 36px; font-size: 11px; } }

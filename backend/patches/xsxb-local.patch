@@ -1,0 +1,573 @@
+diff --git a/tools/animation_tuner/public/app.js b/tools/animation_tuner/public/app.js
+index 52b9512..6a922f2 100644
+--- a/tools/animation_tuner/public/app.js
++++ b/tools/animation_tuner/public/app.js
+@@ -72,6 +72,9 @@ const els = {
+   chainGroupSelect: document.querySelector("#chainGroupSelect"),
+   playPause: document.querySelector("#playPause"),
+   ghostToggle: document.querySelector("#ghostToggle"),
++  canvasToolSelect: document.querySelector("#canvasToolSelect"),
++  canvasToolMove: document.querySelector("#canvasToolMove"),
++  canvasToolScale: document.querySelector("#canvasToolScale"),
+   applyBaseToFrame: document.querySelector("#applyBaseToFrame"),
+   undo: document.querySelector("#undo"),
+   undoTop: document.querySelector("#undoTop"),
+@@ -170,7 +173,7 @@ const I18N = {
+     groupTimeMs: "组时长",
+     groupSearchPlaceholder: "名称、类型、来源",
+     height: "高",
+-    hint: "拖动画布可平移。选中附加帧：拖动移动，按住 R 滚轮旋转，按住 Z 滚轮缩放。框默认拖整体；按住 Alt 只拖节点塑形。",
++    hint: "先选下方帧，再点画布人物选中；默认偏移，可切换缩放。空白处拖动平移。附加帧：拖动移动，R+滚轮旋转，Z+滚轮缩放。框默认整体拖动，Alt 变形。",
+     hitbox: "攻击框",
+     hurtbox: "受击框",
+     collisionbox: "碰撞体",
+@@ -331,7 +334,7 @@ const I18N = {
+     groupTimeMs: "Group duration",
+     groupSearchPlaceholder: "Name, type, source",
+     height: "Height",
+-    hint: "Drag pans. Selected attached frame: drag to move, hold R + wheel to rotate, hold Z + wheel to scale. Boxes drag as a whole; hold Alt to drag handles only.",
++    hint: "Select a frame below, then click the canvas character; offset is the default and can switch to scale. Drag empty space to pan. Attached frame: drag to move, R + wheel rotates, Z + wheel scales. Boxes drag as a whole; Alt reshapes.",
+     hitbox: "Hitbox",
+     hurtbox: "Hurtbox",
+     collisionbox: "Collision",
+@@ -479,6 +482,13 @@ let playbackSecondaryGroup = null;
+ let playbackSwitching = false;
+ let view = { zoom: 1, x: 0, y: 0 };
+ let drag = null;
++// Framecraft direct canvas manipulation: the current frame can be selected
++// and edited in-place with move/scale tools, like a game-engine viewport.
++// Offset is the default editing mode. Selecting a frame in the filmstrip
++// clears the canvas selection; the next canvas click confirms that selection.
++let canvasTransformTool = "move";
++let canvasFrameSelected = false;
++let canvasFrameDrag = null;
+ let undoStack = [];
+ let redoStack = [];
+ const UNDO_COALESCE_WINDOW_MS = 650;
+@@ -931,7 +941,7 @@ function updateSceneScaleFromInput() {
+   const nextScale = Math.max(0.01, Number(els.sceneScale.value || 1));
+   if (nearlyEqual(nextScale, 1)) {
+     delete sceneSettings[sceneId];
+-  } else {
++  } else if (canvasTransformTool === "scale") {
+     sceneSettings[sceneId] = {
+       ...(sceneSettings[sceneId] || {}),
+       scale: nextScale,
+@@ -1977,6 +1987,8 @@ async function loadConfig() {
+ 
+ async function selectGroup(group, options = {}) {
+   if (!group) return;
++  canvasFrameSelected = false;
++  canvasFrameDrag = null;
+   const hadCurrentGroup = Boolean(currentGroup);
+   if (options.stopPlayback !== false) {
+     playing = false;
+@@ -4029,6 +4041,8 @@ function syncGroupPlaybackInputs() {
+ 
+ function selectFilmstripFrame(index, event = null) {
+   clearSelectedAttachment();
++  canvasFrameSelected = false;
++  canvasFrameDrag = null;
+   const frameIndex = clampFrameIndex(index, currentGroup);
+   if (event?.shiftKey) {
+     const anchor = clampFrameIndex(selectionAnchorFrame, currentGroup);
+@@ -4532,6 +4546,25 @@ function renderFilmstripGroup(group, label) {
+ 
+ function fitView() {
+   view = { zoom: 1, x: els.stage.width / 2, y: els.stage.height / 2 };
++  // Framecraft compatibility: fit Lite previews without altering saved transforms.
++  if (config?.projectKind !== "frame_lite" || !currentGroup || !images[selectedFrame]) return;
++  const centered = view;
++  view = { zoom: 1, x: 0, y: 0 };
++  const rect = currentFrameRect();
++  if (!rect || ![rect.x, rect.y, rect.width, rect.height].every(Number.isFinite)
++      || !rect.width || !rect.height) {
++    view = centered;
++    return;
++  }
++  const padding = 32 * devicePixelRatio;
++  const zoom = Math.min(1,
++    Math.max(1, els.stage.width - padding * 2) / Math.abs(rect.width),
++    Math.max(1, els.stage.height - padding * 2) / Math.abs(rect.height));
++  view = {
++    zoom,
++    x: els.stage.width / 2 - (rect.x + rect.width / 2) * zoom,
++    y: els.stage.height / 2 - (rect.y + rect.height / 2) * zoom,
++  };
+ }
+ 
+ function zoomViewAt(event) {
+@@ -5756,6 +5789,7 @@ function draw() {
+     }
+   }
+   drawCompositeFrame(selectedFrame, 1, true);
++  drawCanvasTransformGizmo();
+   drawReferenceFrameOverlay();
+   drawBoxes();
+   attackTrailEditor?.drawGuides();
+@@ -5764,6 +5798,148 @@ function draw() {
+   updateCoordHud();
+ }
+ 
++function setCanvasTransformTool(tool) {
++  canvasTransformTool = ["select", "move", "scale"].includes(tool) ? tool : "move";
++  const buttons = [
++    [els.canvasToolSelect, "select"],
++    [els.canvasToolMove, "move"],
++    [els.canvasToolScale, "scale"],
++  ];
++  for (const [button, value] of buttons) {
++    if (!button) continue;
++    const active = value === canvasTransformTool;
++    button.classList.toggle("active", active);
++    button.setAttribute("aria-pressed", active ? "true" : "false");
++  }
++  if (els.stage) els.stage.style.cursor = canvasTransformTool === "move" ? "move" : canvasTransformTool === "scale" ? "nwse-resize" : "default";
++  draw();
++}
++
++function directCanvasFrameRect() {
++  if (!currentGroup || !images.length || currentGroup.previewOwner) return null;
++  return currentFrameRect(selectedFrame);
++}
++
++function directCanvasFrameHit(event) {
++  const rect = directCanvasFrameRect();
++  if (!rect) return null;
++  return pointInRect(stagePoint(event), rect) ? rect : null;
++}
++
++function ensureDirectFrameSelection() {
++  if (!currentGroup || !images.length || currentGroup.previewOwner) return false;
++  if (selectedFrameCount() !== 1) setSingleFrameSelection(selectedFrame, currentGroup);
++  if (selectedFrameAttachment()) return false;
++  if (!canEditFrameTransform(currentGroup)) return false;
++  if (adjustmentMode !== "frame") setAdjustmentMode("frame");
++  syncAdjustmentInputs();
++  renderFilmstrip();
++  return true;
++}
++
++function directCanvasWorldScale() {
++  return Math.max(0.0001, runtimeBaseScaleForGroup(selectedFrame, currentGroup, images) * view.zoom * devicePixelRatio);
++}
++
++function drawCanvasTransformGizmo() {
++  if (!canvasFrameSelected || selectedFrameAttachment()) return;
++  const rect = directCanvasFrameRect();
++  if (!rect) return;
++  ctx.save();
++  ctx.strokeStyle = "rgba(72, 207, 255, .95)";
++  ctx.fillStyle = "rgba(72, 207, 255, .95)";
++  ctx.lineWidth = Math.max(1.5, 2 * devicePixelRatio);
++  ctx.setLineDash([8 * devicePixelRatio, 5 * devicePixelRatio]);
++  ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
++  ctx.setLineDash([]);
++  if (canvasTransformTool === "move") {
++    const size = 10 * devicePixelRatio;
++    ctx.beginPath();
++    ctx.moveTo(rect.originX - size, rect.originY); ctx.lineTo(rect.originX + size, rect.originY);
++    ctx.moveTo(rect.originX, rect.originY - size); ctx.lineTo(rect.originX, rect.originY + size);
++    ctx.stroke();
++  } else if (canvasTransformTool === "scale") {
++    const size = 7 * devicePixelRatio;
++    ctx.fillRect(rect.x + rect.width - size, rect.y + rect.height - size, size * 2, size * 2);
++  }
++  ctx.restore();
++}
++
++function beginDirectCanvasPointer(event) {
++  const rect = directCanvasFrameHit(event);
++  if (!rect) return false;
++  // Confirm a filmstrip selection on the canvas first. The first click only
++  // selects the character; it must never pan or mutate a transform.
++  if (!canvasFrameSelected) {
++    if (selectedFrameAttachment()) clearSelectedAttachment();
++    canvasFrameSelected = ensureDirectFrameSelection();
++    if (!canvasFrameSelected) return false;
++    draw();
++    return true;
++  }
++  if (canvasTransformTool === "select") {
++    draw();
++    return true;
++  }
++  if (!ensureDirectFrameSelection()) return false;
++  const point = stagePoint(event);
++  const transform = structuredClone(frameTransform(selectedFrame, currentGroup));
++  canvasFrameDrag = {
++    mode: canvasTransformTool,
++    startPoint: point,
++    startTransform: transform,
++    rect,
++    center: { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 },
++    startRadius: Math.max(1, Math.hypot(point.x - (rect.x + rect.width / 2), point.y - (rect.y + rect.height / 2))),
++    undoPushed: false,
++  };
++  els.stage.setPointerCapture(event.pointerId);
++  els.stage.classList.add("dragging");
++  return true;
++}
++
++function updateDirectCanvasPointer(event) {
++  if (!canvasFrameDrag) return false;
++  const point = stagePoint(event);
++  const transform = structuredClone(canvasFrameDrag.startTransform);
++  if (canvasFrameDrag.mode === "move") {
++    const scale = directCanvasWorldScale();
++    const facing = effectiveFlipH(currentGroup) ? -1 : 1;
++    transform.offset = {
++      x: canvasFrameDrag.startTransform.offset.x + (point.x - canvasFrameDrag.startPoint.x) / (scale * facing),
++      y: canvasFrameDrag.startTransform.offset.y + (point.y - canvasFrameDrag.startPoint.y) / scale,
++    };
++  } else {
++    const factor = Math.min(20, Math.max(0.001, 1 + (point.y - canvasFrameDrag.startPoint.y) / Math.max(64, canvasFrameDrag.rect.width, canvasFrameDrag.rect.height)));
++    transform.scale = Math.min(20, Math.max(0.001, canvasFrameDrag.startTransform.scale * factor));
++    transform.scaleX = Math.min(20, Math.max(0.001, canvasFrameDrag.startTransform.scaleX * factor));
++    transform.scaleY = Math.min(20, Math.max(0.001, canvasFrameDrag.startTransform.scaleY * factor));
++  }
++  const start = canvasFrameDrag.startTransform;
++  const changed = !nearlyEqual(transform.offset.x, start.offset.x)
++    || !nearlyEqual(transform.offset.y, start.offset.y)
++    || !nearlyEqual(transform.scale, start.scale)
++    || !nearlyEqual(transform.scaleX, start.scaleX)
++    || !nearlyEqual(transform.scaleY, start.scaleY);
++  if (!changed) return true;
++  if (!canvasFrameDrag.undoPushed) {
++    pushUndo(canvasFrameDrag.mode === "move" ? "canvas frame offset" : "canvas frame scale");
++    canvasFrameDrag.undoPushed = true;
++  }
++  setFrameTransform(selectedFrame, transform);
++  syncAdjustmentInputs();
++  renderFilmstrip();
++  draw();
++  return true;
++}
++
++function endDirectCanvasPointer() {
++  if (!canvasFrameDrag) return;
++  canvasFrameDrag = null;
++  els.stage.classList.remove("dragging");
++  updateCoordHud();
++}
++
+ function updateSelectedFromInputs(transform = transformFromAdjustmentInputs(), editedField = "") {
+   const attachment = selectedFrameAttachment();
+   if (attachment) {
+@@ -7167,6 +7343,10 @@ if (els.ghostToggle) {
+ }
+ 
+ els.resetView.addEventListener("click", () => { fitView(); draw(); });
++for (const [button, tool] of [[els.canvasToolSelect, "select"], [els.canvasToolMove, "move"], [els.canvasToolScale, "scale"]]) {
++  if (button) button.addEventListener("click", () => setCanvasTransformTool(tool));
++}
++setCanvasTransformTool("move");
+ els.save.addEventListener("click", () => save().catch((error) => status(t("saveFailed", { message: error.message }))));
+ if (els.updateButton) els.updateButton.addEventListener("click", installTunerUpdate);
+ if (els.fps) {
+@@ -7242,11 +7422,13 @@ els.stage.addEventListener("pointerdown", (event) => {
+     draw();
+     return;
+   }
++  if (beginDirectCanvasPointer(event)) return;
+   beginDrag({ mode: "pan", x: event.clientX, y: event.clientY, viewX: view.x, viewY: view.y });
+ });
+ 
+ els.stage.addEventListener("pointermove", (event) => {
+   pointerStagePoint = stagePoint(event);
++  if (updateDirectCanvasPointer(event)) return;
+   if (attackTrailEditor?.pointerMove(event)) {
+     updateCoordHud();
+     return;
+@@ -7367,6 +7549,7 @@ els.stage.addEventListener("pointermove", (event) => {
+ 
+ els.stage.addEventListener("pointerup", () => {
+   attackTrailEditor?.pointerUp();
++  endDirectCanvasPointer();
+   drag = null;
+   els.stage.classList.remove("dragging");
+   updateCoordHud();
+@@ -7374,6 +7557,7 @@ els.stage.addEventListener("pointerup", () => {
+ 
+ els.stage.addEventListener("pointercancel", () => {
+   attackTrailEditor?.pointerUp();
++  endDirectCanvasPointer();
+   drag = null;
+   pointerStagePoint = null;
+   els.stage.classList.remove("dragging");
+@@ -7382,6 +7566,7 @@ els.stage.addEventListener("pointercancel", () => {
+ 
+ els.stage.addEventListener("lostpointercapture", () => {
+   attackTrailEditor?.pointerUp();
++  endDirectCanvasPointer();
+   drag = null;
+   els.stage.classList.remove("dragging");
+   updateCoordHud();
+@@ -7407,6 +7592,15 @@ window.addEventListener("keydown", (event) => {
+     save().catch((error) => status(t("saveFailed", { message: error.message })));
+     return;
+   }
++  // Editor-wide history shortcuts. Handle these before the typing-target
++  // guard so readonly numeric controls and the canvas behave consistently.
++  if (command && event.key.toLowerCase() === "z") {
++    event.preventDefault();
++    event.stopPropagation();
++    if (event.shiftKey) redo();
++    else undo();
++    return;
++  }
+   if (command && ["c", "v"].includes(event.key.toLowerCase()) && frameAttachmentEditingLocked()) {
+     event.preventDefault();
+     event.stopPropagation();
+diff --git a/tools/animation_tuner/public/index.html b/tools/animation_tuner/public/index.html
+index d8d971e..a4d28b9 100644
+--- a/tools/animation_tuner/public/index.html
++++ b/tools/animation_tuner/public/index.html
+@@ -285,7 +285,7 @@
+         <div class="toolbar">
+           <div class="toolbarMain">
+             <strong id="canvasTitle" data-i18n="canvas">画布</strong>
+-            <span id="hint" data-i18n="hint">拖动画布可平移。选中附加帧：拖动移动，按住 R 滚轮旋转，按住 Z 滚轮缩放。</span>
++            <span id="hint" data-i18n="hint">先选下方帧，再点画布人物选中；默认偏移，可切换缩放。空白处拖动平移。附加帧：拖动移动，R+滚轮旋转，Z+滚轮缩放。</span>
+             <div id="selectionHud" class="selectionHud">帧 -</div>
+           </div>
+           <div class="toolbarActions">
+@@ -307,6 +307,11 @@
+               <button id="undoTop" class="secondary iconButton" data-i18n-title="undo" title="撤销">&larr;</button>
+               <button id="redoTop" class="secondary iconButton" data-i18n-title="redo" title="重做">&rarr;</button>
+             </div>
++            <div id="canvasTransformTools" class="canvasTransformTools" role="group" aria-label="画布变换工具">
++              <button id="canvasToolSelect" class="secondary transformTool" type="button" aria-pressed="false" title="选中当前帧图片">选择</button>
++              <button id="canvasToolMove" class="secondary transformTool active" type="button" aria-pressed="true" title="拖动画布中的图片调整偏移">偏移</button>
++              <button id="canvasToolScale" class="secondary transformTool" type="button" aria-pressed="false" title="上下拖动图片调整缩放">缩放</button>
++            </div>
+             <button id="resetView" class="secondary" data-i18n="resetView">重置视图</button>
+           </div>
+         </div>
+diff --git a/tools/frame_tuner_lite/import_frames.js b/tools/frame_tuner_lite/import_frames.js
+index 7c7c563..cf5dabc 100644
+--- a/tools/frame_tuner_lite/import_frames.js
++++ b/tools/frame_tuner_lite/import_frames.js
+@@ -45,13 +45,16 @@ function run(argv = process.argv.slice(2)) {
+     };
+   });
+   const fps = Math.min(240, Math.max(0.1, Number(args.fps || 12)));
++  const anchorMode = String(args["anchor-mode"] || "canvas_bottom_center") === "canvas_center"
++    ? "canvas_center"
++    : "canvas_bottom_center";
+   const previewOwner = String(args["attach-to"] || "").trim();
+   const previewLayer = String(args.layer || "front").toLowerCase() === "behind" ? "behind" : "front";
+   const animation = {
+     id: animationId,
+     name: animationId,
+     type: previewOwner ? "vfx" : "actor",
+-    anchorMode: "canvas_bottom_center",
++    anchorMode,
+     fps,
+     source: reslash(path.relative(ROOT, destination)),
+     previewOwner: previewOwner || undefined,
+diff --git a/tools/frame_tuner_lite/public/lite.css b/tools/frame_tuner_lite/public/lite.css
+index c7f16b0..bfc4ff5 100644
+--- a/tools/frame_tuner_lite/public/lite.css
++++ b/tools/frame_tuner_lite/public/lite.css
+@@ -6,6 +6,29 @@ body.frameTunerLite .brand .mark {
+   background: linear-gradient(135deg, var(--accent-2) 0 46%, transparent 46% 54%, var(--accent) 54% 100%);
+ }
+ 
++body.frameTunerLite .canvasTransformTools {
++  display: inline-flex;
++  align-items: center;
++  gap: 4px;
++  padding: 3px;
++  border: 1px solid var(--line);
++  border-radius: 8px;
++  background: color-mix(in srgb, var(--panel) 82%, transparent);
++}
++
++body.frameTunerLite .canvasTransformTools .transformTool {
++  min-width: 48px;
++  min-height: 30px;
++  padding: 4px 8px;
++  font-size: 11px;
++}
++
++body.frameTunerLite .canvasTransformTools .transformTool.active {
++  border-color: var(--accent-2);
++  background: var(--accent-2);
++  color: var(--on-bright);
++}
++
+ .liteExportPanel {
+   border-top-color: var(--accent-2);
+ }
+diff --git a/tools/frame_tuner_lite/public/lite.js b/tools/frame_tuner_lite/public/lite.js
+index 17f4f5f..6dd0419 100644
+--- a/tools/frame_tuner_lite/public/lite.js
++++ b/tools/frame_tuner_lite/public/lite.js
+@@ -464,11 +464,131 @@
+     }
+   }
+ 
++  // Framecraft can ask the embedded editor to save and hand the rendered
++  // sequence back to the workbench.  This stays in the Lite bridge so the
++  // pinned upstream app.js does not need to expose its private save closure.
++  const returnState = { busy: false };
++  let lastParentState = "";
++  function notifyParentState() {
++    const api = window.XsxbFrameTunerLite;
++    const current = api?.current?.();
++    if (!current?.ready || !window.parent || window.parent === window) return;
++    const state = {
++      projectId: String(current.projectId || ""),
++      profileId: String(current.profileId || ""),
++      animationId: String(current.animationId || ""),
++      frameCount: Math.max(0, Number(current.frameCount) || 0),
++      fps: Number(current.fps) || 0,
++    };
++    const signature = JSON.stringify(state);
++    if (signature === lastParentState) return;
++    lastParentState = signature;
++    window.parent.postMessage({ type: "framecraft-tuner-state", ...state }, "*");
++  }
++  const waitForSave = async () => {
++    const save = document.querySelector("#save");
++    if (!save) throw new Error("找不到 XSXB 保存按钮。");
++    save.click();
++    const started = performance.now();
++    let sawBusy = false;
++    while (performance.now() - started < 60000) {
++      await new Promise((resolve) => setTimeout(resolve, 100));
++      if (save.disabled) sawBusy = true;
++      const dirty = document.body.classList.contains("hasUnsavedChanges")
++        || document.querySelector("#saveState")?.classList.contains("dirty");
++      if ((!save.disabled && (sawBusy || performance.now() - started > 300)) || !dirty && !save.disabled && performance.now() - started > 300) {
++        if (dirty) throw new Error("XSXB 保存失败，请检查编辑器中的提示。");
++        return;
++      }
++    }
++    throw new Error("XSXB 保存超时，请检查本地调参服务。");
++  };
++
++  async function returnToFramecraft(message) {
++    if (returnState.busy) return;
++    returnState.busy = true;
++    const requestId = String(message.requestId || "");
++    const post = (type, payload = {}) => window.parent.postMessage({ type, requestId, ...payload }, "*");
++    try {
++      await waitForSave();
++      const api = window.XsxbFrameTunerLite;
++      const current = api?.current();
++      if (!current?.ready) throw new Error("当前 XSXB 动画尚未准备完成。");
++      // Framecraft supplies the source canvas so returning a tuned sequence
++      // does not replace the original transparent margins with a tight crop.
++      const requestedCanvas = message.canvas && Number(message.canvas.width) > 0 && Number(message.canvas.height) > 0
++        ? {
++            width: Math.min(8192, Math.max(1, Math.round(Number(message.canvas.width)))),
++            height: Math.min(8192, Math.max(1, Math.round(Number(message.canvas.height)))),
++            originPixelX: Number(message.canvas.originPixelX),
++            originPixelY: Number(message.canvas.originPixelY),
++          }
++        : null;
++      if (!requestedCanvas && !state.layout) await measureCanvas();
++      const layout = requestedCanvas || state.layout || {
++        width: Math.round(Number(current.settings?.canvas?.width || 1024)),
++        height: Math.round(Number(current.settings?.canvas?.height || 1024)),
++        originPixelX: Number(current.settings?.canvas?.originPixelX || 512),
++        originPixelY: Number(current.settings?.canvas?.originPixelY || 880),
++      };
++      const samples = api.timeline();
++      if (!samples.length) throw new Error("当前动画没有可返回的有效帧。");
++      const totalDurationMs = samples.reduce((sum, sample) => sum + Math.max(0, Number(sample.durationMs) || 0), 0);
++      const returnedFps = totalDurationMs > 0
++        ? Math.min(60, Math.max(1, Math.round(samples.length * 1000 / totalDurationMs)))
++        : (Number(message.fps) || 12);
++      post("framecraft-return-start", {
++        projectId: current.projectId,
++        profileId: current.profileId,
++        animationId: current.animationId,
++        total: samples.length,
++        fps: returnedFps,
++        width: layout.width,
++        height: layout.height,
++      });
++      for (const [index, sample] of samples.entries()) {
++        const rendered = await api.renderFrame(sample, {
++          width: layout.width,
++          height: layout.height,
++          originPixelX: layout.originPixelX,
++          originPixelY: layout.originPixelY,
++          pixelScale: 1,
++        });
++        const data = typeof rendered === "string" ? rendered : rendered?.data;
++        if (!data) throw new Error(`第 ${index + 1} 帧渲染失败。`);
++        post("framecraft-return-frame", {
++          index,
++          data,
++          width: layout.width,
++          height: layout.height,
++          sourceFrameIndex: Number(sample.frameIndex) || index,
++          durationMs: Number(sample.durationMs) || 0,
++        });
++      }
++      post("framecraft-return-complete", { total: samples.length });
++    } catch (error) {
++      post("framecraft-return-error", { message: error instanceof Error ? error.message : "无法返回精调结果。" });
++    } finally {
++      returnState.busy = false;
++    }
++  }
++
++  window.addEventListener("message", (event) => {
++    if (event.data?.type !== "framecraft-save-and-return") return;
++    const parentOrigin = (() => {
++      try { return new URL(document.referrer).origin; } catch { return ""; }
++    })();
++    if (event.source !== window.parent || (parentOrigin && event.origin !== parentOrigin)) return;
++    void returnToFramecraft(event.data);
++  });
++
+   window.addEventListener("xsxb-frame-tuner-config", () => {
+     initialize();
+     applyLiteLabels();
+     syncSettings();
++    notifyParentState();
+   });
+   initialize();
+-  setTimeout(() => { applyLiteLabels(); syncSettings(); }, 500);
++  setTimeout(() => { applyLiteLabels(); syncSettings(); notifyParentState(); }, 500);
++  setInterval(notifyParentState, 500);
+ })();
+diff --git a/tools/frame_tuner_lite/server.js b/tools/frame_tuner_lite/server.js
+index b8e4a8e..9e2e1d3 100644
+--- a/tools/frame_tuner_lite/server.js
++++ b/tools/frame_tuner_lite/server.js
+@@ -262,6 +262,20 @@ function projectData(project) {
+   return { target, manifest, tuning, attackTrails, audio, attachments: Array.isArray(attachments) ? attachments : [], settings };
+ }
+ 
++// Framecraft compatibility: migration bookkeeping cannot invalidate other projects.
++function framecraftRevisionFileContent(filePath) {
++  const content = fs.existsSync(filePath) ? fs.readFileSync(filePath) : Buffer.alloc(0);
++  if (filePath !== sharedAttackTrailPresetPath(ROOT)) return content;
++  try {
++    const value = JSON.parse(content.toString("utf8").replace(/^\uFEFF/, ""));
++    if (value && typeof value === "object" && !Array.isArray(value)) {
++      delete value.migratedProjectIds;
++      return Buffer.from(JSON.stringify(value));
++    }
++  } catch {}
++  return content;
++}
++
+ function projectConfigRevision(project) {
+   const target = store.paths(project);
+   const hash = crypto.createHash("sha256");
+@@ -275,7 +289,7 @@ function projectConfigRevision(project) {
+   ]) {
+     hash.update(path.basename(filePath));
+     hash.update("\0");
+-    hash.update(fs.existsSync(filePath) ? fs.readFileSync(filePath) : Buffer.alloc(0));
++    hash.update(framecraftRevisionFileContent(filePath));
+     hash.update("\0");
+   }
+   return hash.digest("hex");

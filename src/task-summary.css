@@ -1,0 +1,7 @@
+.task-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(136px, 1fr)); gap: 10px; margin: 0 0 18px; }
+.task-summary > div { min-width: 0; padding: 12px 11px; border: 2px solid #2c2c26; border-radius: 6px; background: #fbf9ee; }
+.task-summary dt { margin-bottom: 6px; color: #81735f; font-size: 10px; line-height: 1.5; }
+.task-summary dd { margin: 0; overflow-wrap: anywhere; color: #161b17; font-size: 11px; font-weight: 750; line-height: 1.5; }
+.task-background-color { display: flex; align-items: center; gap: 7px; }
+.task-background-color > span { width: 16px; height: 16px; border: 2px solid #151515; border-radius: 4px; flex-shrink: 0; }
+@media (max-width: 480px) { .task-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

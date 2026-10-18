@@ -1,0 +1,505 @@
+.compression-source-bar { display: flex; align-items: center; gap: 12px; padding: 16px 19px; border-radius: 12px; margin-bottom: 16px; }
+.compression-source-icon { width: 36px; height: 36px; flex: 0 0 auto; border: 1px solid #dce9d4; border-radius: 9px; display: grid; place-items: center; background: #edf5e7; color: #80a06c; }
+.compression-source-icon svg { width: 18px; height: 18px; stroke-width: 1.6; }
+.compression-source-copy { min-width: 0; }
+.compression-source-copy > strong { font-size: 12px; color: #4c6542; font-weight: 600; }
+.compression-source-copy > p { font-size: 10px; line-height: 1.8; color: #9ba98d; margin: 5px 0 0; max-width: 480px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.compression-source-copy > p > span:first-of-type { color: #b8c6ab; padding: 0 6px; }
+.compression-source-actions { display: flex; align-items: center; gap: 5px; margin-left: auto; flex-shrink: 0; }
+.compression-source-actions .button { font-size: 10px; }
+.compression-source-actions .button svg { width: 12px; height: 12px; }
+.compression-count { display: inline-flex; align-items: center; justify-content: center; padding: 1px 4px; margin-left: 2px; font-size: 10px; color: #7d9c69; background: #e3eed9; border-radius: 3px; }
+.compression-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 17px; align-items: start; }
+.compression-settings { padding: 19px; border-radius: 13px; }
+.compression-panel-heading { display: flex; align-items: center; gap: 6px; margin-bottom: 24px; }
+.compression-panel-heading > svg { color: #87a773; width: 14px; height: 14px; }
+.compression-panel-heading > h3 { color: #49643e; font-size: 12px; font-weight: 600; margin: 0; }
+.compression-panel-heading > span { font-size: 10px; color: #a3b393; letter-spacing: .7px; margin-left: auto; }
+.compression-field { margin-bottom: 22px; }
+.compression-field > label, .compression-field-row > label { color: #738b63; font-size: 10px; display: block; margin-bottom: 9px; }
+.compression-field > label > small { font-size: 10px; color: #adb99f; margin-left: 7px; }
+.compression-field > select { width: 100%; font-size: 10px; border-color: #e1e9d9; height: 35px; padding: 8px 9px; border-radius: 7px; }
+.compression-field-hint { margin: 8px 0 0; font-size: 10px; line-height: 1.8; color: #a5b197; }
+.compression-input-suffix { display: flex; align-items: center; gap: 10px; border: 1px solid #e1e9d9; border-radius: 7px; padding-right: 10px; overflow: hidden; height: 34px; }
+.compression-input-suffix > input { flex: 1; width: 60px; border: 0 !important; background: none !important; box-shadow: none !important; padding: 7px 9px !important; height: 32px !important; font-size: 11px !important; }
+.compression-input-suffix > span { color: #a4b493; font-size: 10px; }
+.compression-input-suffix:focus-within { border-color: #95b77f; }
+.compression-field-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.compression-field-row > label { margin: 0; }
+.compression-field-row > span { font-size: 10px; color: #7e9e68; font-variant-numeric: tabular-nums; }
+.compression-scale-value { display: flex; align-items: center; gap: 5px; }
+.compression-scale-value > input { height: 24px !important; width: 49px; padding: 3px 4px !important; text-align: center; font-size: 10px !important; }
+.compression-scale-value > span { color: #9db18b; font-size: 10px; }
+.compression-scale-presets { margin-top: 13px; padding: 3px; }
+.compression-scale-presets > button { font-size: 10px; padding: 6px 5px; }
+.compression-field-disabled { opacity: .43; }
+.compression-settings > .compression-field:last-of-type { margin-bottom: 20px; }
+.compression-generate { min-height: 36px; font-size: 11px; gap: 7px; }
+.compression-generate > svg:last-child:not(:first-child) { width: 12px; height: 12px; margin-left: auto; }
+.compression-generate > svg:first-child { margin-right: auto; }
+.compression-local-note { display: flex; align-items: flex-start; gap: 6px; margin-top: 13px; }
+.compression-local-note > svg { flex-shrink: 0; width: 10px; height: 10px; margin-top: 3px; color: #9fb68c; }
+.compression-local-note > p { margin: 0; color: #aab99d; font-size: 10px; line-height: 1.8; }
+.compression-comparison { min-width: 0; }
+.compression-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 17px 0; border-radius: 12px; margin-bottom: 14px; }
+.compression-metrics > div { padding: 0 19px; border-right: 1px solid #e8edde; min-width: 0; }
+.compression-metrics > div:last-child { border-right: 0; }
+.compression-metrics > div > span { display: block; font-size: 10px; color: #9aac8b; margin-bottom: 9px; }
+.compression-metrics strong { display: flex; align-items: baseline; gap: 5px; font-size: 21px; font-weight: 500; color: #586e48; letter-spacing: -.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.compression-metrics strong > small { font-size: 10px; font-weight: 400; color: #a6b795; margin-left: 2px; letter-spacing: 0; }
+.compression-metrics strong > svg { align-self: center; width: 12px; height: 12px; margin-left: 2px; stroke-width: 1.5; }
+.compression-metrics strong.teal { color: #438563; }
+.compression-metrics strong.amber { color: #bd9b54; }
+.compression-preview-card { border-radius: 13px; padding: 19px; }
+.compression-preview-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.compression-preview-toolbar h3 { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #49633f; font-weight: 600; margin: 0; }
+.compression-preview-toolbar p { font-size: 10px; color: #a0b08f; margin: 6px 0 0; line-height: 1.7; }
+.compression-preview-toolbar > .button { font-size: 10px; padding: 5px 7px; min-height: 26px; color: #9db18b; }
+.compression-dirty { font-size: 10px; font-weight: 400; padding: 4px 5px; border: 1px solid #ecdfbf; border-radius: 4px; background: #fcf7e9; color: #b29a64; }
+.compression-ready { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; padding: 4px 5px; border-radius: 4px; color: #91ac7a; background: #f0f7e8; font-weight: 400; }
+.compression-ready svg { width: 9px; height: 9px; }
+.compression-help { display: flex; align-items: flex-start; gap: 7px; margin-top: 14px; padding: 10px 12px; background: #f7faf1; border: 1px solid #e6eedb; border-radius: 7px; color: #99b086; }
+.compression-help > svg { flex-shrink: 0; width: 12px; height: 12px; margin-top: 2px; }
+.compression-help > p { font-size: 10px; line-height: 1.8; margin: 0; }
+.compression-view-controls { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin: 18px 0 15px; }
+.compression-view-controls > .segmented { flex: 0 0 auto; padding: 2px; border-radius: 6px; }
+.compression-view-controls > .segmented > button { font-size: 10px; padding: 6px 9px; }
+.compression-zoom-controls { display: flex; align-items: center; gap: 7px; width: 245px; }
+.compression-zoom-controls > .icon-button { width: 21px; height: 21px; border-color: #e4ebda; background: #f9fcf4; color: #8fa87b; border-radius: 5px; }
+.compression-zoom-controls > .icon-button > svg { width: 10px; height: 10px; }
+.compression-zoom-controls > input { min-width: 20px; flex: 1; height: 3px; }
+.compression-zoom-controls > span { min-width: 33px; font-size: 10px; color: #a2b48f; font-variant-numeric: tabular-nums; text-align: center; }
+.compression-zoom-controls > .button { font-size: 10px; min-height: 23px; padding: 4px 5px; gap: 4px; }
+.compression-zoom-controls > .button svg { width: 10px; height: 10px; }
+.compression-preview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.compression-preview-pane { min-width: 0; }
+.compression-preview-pane .preview-export { padding: 0 1px; }
+.compression-pane-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+.compression-pane-heading > span:first-child { display: inline-flex; align-items: center; gap: 6px; color: #81976e; font-size: 10px; white-space: nowrap; }
+.compression-pane-heading i { display: block; width: 4px; height: 4px; border-radius: 50%; background: #bdaf84; }
+.compression-preview-pane[data-kind='processed'] .compression-pane-heading i { background: #75a37c; }
+.compression-pane-heading small { font-size: 10px; letter-spacing: .6px; color: #b6c2a8; margin-left: 3px; }
+.compression-pane-heading > span:last-child { font-size: 10px; color: #a1b18f; white-space: nowrap; }
+.compression-heading-dot { display: inline-block; padding: 0 5px; color: #c2ceb5; }
+.compression-image-stage { height: 330px; position: relative; border: 1px solid #dfe7d6; border-radius: 8px; overflow: hidden; touch-action: none; cursor: grab; }
+.compression-image-stage:active { cursor: grabbing; }
+.compression-image-stage > img { position: absolute; display: block; object-fit: contain; transform-origin: center; pointer-events: none; user-select: none; image-rendering: auto; }
+.compression-stage-label { position: absolute; left: 9px; bottom: 8px; font-size: 10px; color: #92aa7c9c; letter-spacing: 1px; pointer-events: none; font-weight: 500; }
+.compression-preview-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; background: #f9fcf5b3; text-align: center; padding: 16px; }
+.compression-preview-empty > svg { width: 28px; height: 28px; color: #b4c6a1; margin-bottom: 13px; }
+.compression-preview-empty > strong { font-size: 11px; font-weight: 500; color: #95ad80; }
+.compression-preview-empty > p { font-size: 10px; margin: 7px 0 0; color: #b0bea1; line-height: 1.8; }
+.compression-dimensions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; padding-bottom: 14px; border-bottom: 1px solid #e9efdf; }
+.compression-dimensions > span { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; color: #a1b58f; }
+.compression-dimensions > span > svg { width: 11px; height: 11px; color: #96ad81; }
+.compression-dimensions > span:last-child { color: #aebca1; font-size: 10px; gap: 0; }
+.compression-transport { display: flex; align-items: center; gap: 12px; padding: 13px 0 0; }
+.compression-playback-buttons { display: flex; align-items: center; gap: 5px; }
+.compression-playback-buttons > .icon-button { width: 23px; height: 23px; border-color: #e1e9d6; color: #8caa74; background: #fcfef9; border-radius: 5px; }
+.compression-playback-buttons > .icon-button > svg { width: 11px; height: 11px; }
+.compression-playback-buttons > .compression-play { width: 27px; height: 27px; background: #5c8f61; border-color: #5c8f61; color: #fff; border-radius: 50%; }
+.compression-frame-position { color: #7e9b65; font-size: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.compression-frame-position > small { color: #b2c09f; font-size: inherit; }
+.compression-frame-seek { min-width: 30px; flex: 1; height: 3px; }
+.compression-fps-label { color: #a5b794; font-size: 10px; white-space: nowrap; }
+.compression-filmstrip { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: thin; scrollbar-color: #d2dfc5 transparent; padding: 14px 1px 3px; margin-top: 4px; }
+.compression-thumbnail { width: 44px; flex: 0 0 auto; height: 54px; padding: 3px; border: 1px solid #e0e9d6; border-radius: 6px; background: #f9fcf3; color: #9fb38c; }
+.compression-thumbnail > img { width: 100%; height: 36px; object-fit: contain; }
+.compression-thumbnail > span { display: block; text-align: center; font-size: 10px; margin-top: 3px; line-height: 7px; font-variant-numeric: tabular-nums; }
+.compression-thumbnail.active { border-color: #80a76a; box-shadow: 0 0 0 1px #80a76a; background: #f1f8e8; color: #779e61; }
+.compression-thumbnail:hover { border-color: #9cbb86; background: #f5faee; }
+.compression-job { display: flex; align-items: center; gap: 9px; padding: 12px 16px; margin-top: 13px; border: 1px solid #dce9d2; border-radius: 9px; background: #f0f7e9; color: #85a76b; font-size: 10px; }
+.compression-spinner { animation: compression-spin .9s linear infinite; flex: 0 0 auto; }
+.compression-job > span { display: flex; align-items: center; gap: 9px; }
+.compression-job strong { font-size: 10px; font-weight: 500; color: #8daa77; font-variant-numeric: tabular-nums; }
+.compression-job > progress { flex: 1; margin-left: 8px; height: 4px; border: 0; appearance: none; border-radius: 5px; overflow: hidden; background: #e0ecd4; }
+.compression-job > progress::-webkit-progress-bar { background: #e0ecd4; }
+.compression-job > progress::-webkit-progress-value { background: #85b075; border-radius: 5px; }
+.compression-job > .button { margin-left: auto; color: #8ba874; font-size: 10px; min-height: 25px; padding: 5px 7px; }
+.compression-error { display: flex; align-items: flex-start; gap: 8px; padding: 12px 14px; margin-top: 13px; background: #fcf8ec; color: #b39b66; border: 1px solid #eee4c8; border-radius: 9px; }
+.compression-error > svg { flex-shrink: 0; margin-top: 2px; }
+.compression-error > p { font-size: 10px; line-height: 1.7; margin: 0; overflow-wrap: anywhere; }
+.compression-error > .icon-button { width: 21px; height: 21px; margin-left: auto; border: 0; color: #b5a074; background: #f7f0dc; }
+.compression-export-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-radius: 12px; padding: 16px 19px; margin-top: 15px; background: #fcfef9; }
+.compression-export-summary { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.compression-export-icon { flex: 0 0 auto; width: 35px; height: 35px; border: 1px solid #e1ebd8; border-radius: 8px; background: #eff6e8; display: grid; place-items: center; color: #93b17b; }
+.compression-export-icon > svg { width: 17px; height: 17px; }
+.compression-export-summary strong { color: #75925f; font-weight: 500; font-size: 11px; }
+.compression-export-summary p { color: #a4b593; font-size: 10px; line-height: 1.8; margin: 5px 0 0; }
+.compression-export-summary p > span { color: #c1cdb5; padding: 0 4px; }
+.compression-export-actions { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.compression-export-actions > .button { font-size: 10px; min-height: 30px; padding: 7px 10px; }
+.compression-export-actions > .button svg { width: 12px; height: 12px; }
+.compression-apply { margin-left: 2px; }
+@keyframes compression-spin { to { transform: rotate(360deg); } }
+@media (max-width: 1150px) {
+  .compression-layout { grid-template-columns: 230px minmax(0, 1fr); gap: 15px; }
+  .compression-settings { padding: 16px; }
+  .compression-panel-heading > span { font-size: 10px; letter-spacing: .3px; }
+  .compression-source-copy > p { max-width: 350px; }
+  .compression-source-actions > .button { font-size: 10px; padding: 6px 8px; }
+  .compression-metrics { padding: 16px 0; }
+  .compression-metrics > div { padding: 0 14px; }
+  .compression-metrics strong { font-size: 18px; }
+  .compression-metrics > div > span { font-size: 10px; }
+  .compression-preview-card { padding: 16px; }
+  .compression-image-stage { height: 300px; }
+  .compression-pane-heading small { display: none; }
+  .compression-export-summary p { font-size: 10px; }
+  .compression-export-actions { gap: 5px; }
+  .compression-export-actions > .button { padding: 7px 8px; font-size: 10px; }
+}
+@media (max-width: 900px) {
+  .compression-source-bar { flex-wrap: wrap; gap: 10px; padding: 15px; }
+  .compression-source-copy { flex: 1; }
+  .compression-source-copy > p { max-width: 600px; font-size: 10px; }
+  .compression-source-actions { margin-left: 46px; }
+  .compression-layout { grid-template-columns: 210px minmax(0, 1fr); gap: 13px; }
+  .compression-settings { padding: 15px; }
+  .compression-panel-heading { margin-bottom: 20px; }
+  .compression-panel-heading > h3 { font-size: 11px; }
+  .compression-panel-heading > span { display: none; }
+  .compression-field > label > small { font-size: 10px; }
+  .compression-field { margin-bottom: 20px; }
+  .compression-metrics > div { padding: 0 10px; }
+  .compression-metrics strong { font-size: 15px; gap: 3px; }
+  .compression-metrics > div > span { font-size: 10px; }
+  .compression-metrics strong > small { font-size: 10px; }
+  .compression-preview-card { padding: 14px; }
+  .compression-preview-toolbar > .button { font-size: 10px; padding: 4px; }
+  .compression-preview-toolbar h3 { font-size: 11px; }
+  .compression-preview-toolbar p { font-size: 10px; }
+  .compression-view-controls { gap: 10px; }
+  .compression-view-controls > .segmented > button { font-size: 10px; padding: 6px 7px; }
+  .compression-zoom-controls { gap: 5px; width: 185px; }
+  .compression-zoom-controls > .button { font-size: 10px; }
+  .compression-zoom-controls > .button svg { display: none; }
+  .compression-zoom-controls > .icon-button { width: 19px; height: 19px; }
+  .compression-preview-grid { gap: 10px; }
+  .compression-pane-heading { flex-wrap: wrap; gap: 5px; }
+  .compression-pane-heading > span:first-child { font-size: 10px; }
+  .compression-pane-heading > span:last-child { font-size: 10px; }
+  .compression-image-stage { height: 280px; }
+  .compression-dimensions { gap: 8px; }
+  .compression-dimensions > span { font-size: 10px; gap: 4px; }
+  .compression-dimensions > span:last-child { font-size: 10px; }
+  .compression-dimensions > span > svg:first-child { display: none; }
+  .compression-export-bar { padding: 14px 15px; flex-wrap: wrap; gap: 12px; }
+  .compression-export-summary p { font-size: 10px; }
+  .compression-export-actions { margin-left: auto; }
+}
+@media (max-width: 700px) {
+  .compression-source-bar { border-radius: 10px; padding: 13px; gap: 9px; margin-bottom: 13px; }
+  .compression-source-icon { width: 30px; height: 30px; border-radius: 7px; }
+  .compression-source-icon svg { width: 15px; height: 15px; }
+  .compression-source-copy > strong { font-size: 10px; }
+  .compression-source-copy > p { font-size: 10px; max-width: 265px; margin-top: 4px; }
+  .compression-source-copy > p > span:first-of-type { padding: 0 4px; }
+  .compression-source-actions { margin: 3px 0 0; padding-top: 10px; border-top: 1px solid #edf1e5; width: 100%; justify-content: space-between; gap: 3px; }
+  .compression-source-actions > .button { font-size: 10px; min-height: 26px; padding: 5px 6px; gap: 4px; }
+  .compression-source-actions > .button svg { width: 10px; height: 10px; }
+  .compression-count { font-size: 10px; padding: 1px 3px; margin-left: 0; }
+  .compression-layout { grid-template-columns: 1fr; gap: 13px; }
+  .compression-settings { padding: 15px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 19px; border-radius: 11px; }
+  .compression-panel-heading { grid-column: 1/-1; margin-bottom: 18px; gap: 6px; }
+  .compression-panel-heading > h3 { font-size: 11px; }
+  .compression-panel-heading > span { display: block; font-size: 10px; }
+  .compression-field { margin-bottom: 20px; min-width: 0; }
+  .compression-field > label, .compression-field-row > label { font-size: 10px; }
+  .compression-field > label > small { display: none; }
+  .compression-field > select { font-size: 10px; height: 32px; padding: 7px 8px; }
+  .compression-input-suffix { height: 32px; }
+  .compression-input-suffix > input { height: 30px !important; font-size: 10px !important; padding: 6px 8px !important; }
+  .compression-input-suffix > span { font-size: 10px; }
+  .compression-field-hint { font-size: 10px; margin-top: 7px; }
+  .compression-field-row { margin-bottom: 12px; gap: 5px; }
+  .compression-field-row > span { font-size: 10px; }
+  .compression-scale-value > input { width: 43px; height: 22px !important; font-size: 10px !important; }
+  .compression-scale-value > span { font-size: 10px; }
+  .compression-scale-presets { margin-top: 11px; }
+  .compression-scale-presets > button { font-size: 10px; padding: 6px 3px; }
+  .compression-generate { min-height: 33px; font-size: 10px; align-self: center; }
+  .compression-generate > svg { width: 12px; height: 12px; }
+  .compression-local-note { margin-top: 0; align-self: center; gap: 5px; }
+  .compression-local-note > p { font-size: 10px; }
+  .compression-local-note > svg { width: 9px; height: 9px; }
+  .compression-metrics { padding: 14px 0; border-radius: 10px; margin-bottom: 12px; }
+  .compression-metrics > div { padding: 0 10px; }
+  .compression-metrics > div > span { font-size: 10px; margin-bottom: 8px; }
+  .compression-metrics strong { font-size: 13px; gap: 2px; letter-spacing: -.3px; }
+  .compression-metrics strong > small { font-size: 10px; margin-left: 0; }
+  .compression-metrics strong > svg { width: 8px; height: 8px; margin-left: 0; }
+  .compression-preview-card { border-radius: 11px; padding: 13px; }
+  .compression-preview-toolbar { gap: 9px; }
+  .compression-preview-toolbar h3 { font-size: 10px; gap: 6px; }
+  .compression-preview-toolbar p { font-size: 10px; margin-top: 5px; }
+  .compression-preview-toolbar > .button { font-size: 10px; min-height: 23px; gap: 4px; }
+  .compression-preview-toolbar > .button svg { width: 10px; height: 10px; }
+  .compression-dirty, .compression-ready { font-size: 10px; padding: 3px 4px; }
+  .compression-help { padding: 8px 9px; gap: 5px; margin-top: 12px; }
+  .compression-help > p { font-size: 10px; }
+  .compression-help > svg { width: 10px; height: 10px; }
+  .compression-view-controls { margin: 14px 0 13px; gap: 9px; }
+  .compression-view-controls > .segmented { padding: 2px; }
+  .compression-view-controls > .segmented > button { font-size: 10px; padding: 6px; }
+  .compression-zoom-controls { width: 170px; gap: 4px; }
+  .compression-zoom-controls > .icon-button { width: 17px; height: 19px; border-radius: 4px; }
+  .compression-zoom-controls > .icon-button svg { width: 9px; height: 9px; }
+  .compression-zoom-controls > span { min-width: 26px; font-size: 10px; }
+  .compression-zoom-controls > .button { font-size: 10px; padding: 4px 3px; }
+  .compression-preview-grid { gap: 9px; }
+  .compression-pane-heading { gap: 5px; flex-wrap: wrap; margin-bottom: 7px; }
+  .compression-pane-heading > span:first-child { font-size: 10px; gap: 4px; }
+  .compression-pane-heading > span:last-child { font-size: 10px; }
+  .compression-pane-heading i { width: 3px; height: 3px; }
+  .compression-heading-dot { padding: 0 3px; }
+  .compression-image-stage { height: 235px; border-radius: 6px; }
+  .compression-stage-label { font-size: 10px; left: 7px; bottom: 7px; letter-spacing: .7px; }
+  .compression-preview-empty { padding: 12px; }
+  .compression-preview-empty > svg { width: 24px; height: 24px; margin-bottom: 11px; }
+  .compression-preview-empty > strong { font-size: 10px; }
+  .compression-preview-empty > p { font-size: 10px; line-height: 1.8; }
+  .compression-dimensions { margin-top: 10px; padding-bottom: 11px; gap: 6px; flex-wrap: wrap; }
+  .compression-dimensions > span { font-size: 10px; gap: 4px; }
+  .compression-dimensions > span:last-child { font-size: 10px; }
+  .compression-dimensions > span > svg { width: 9px; height: 9px; }
+  .compression-transport { gap: 8px; padding-top: 11px; }
+  .compression-playback-buttons { gap: 4px; }
+  .compression-playback-buttons > .icon-button { width: 20px; height: 21px; }
+  .compression-playback-buttons > .compression-play { width: 24px; height: 24px; }
+  .compression-playback-buttons > .icon-button > svg { width: 9px; height: 9px; }
+  .compression-frame-position { font-size: 10px; }
+  .compression-fps-label { font-size: 10px; }
+  .compression-filmstrip { padding-top: 12px; gap: 6px; }
+  .compression-thumbnail { width: 38px; height: 47px; border-radius: 5px; padding: 2px; }
+  .compression-thumbnail > img { height: 31px; }
+  .compression-thumbnail > span { font-size: 10px; margin-top: 3px; }
+  .compression-job { font-size: 10px; padding: 10px 12px; gap: 7px; margin-top: 12px; }
+  .compression-job > svg { width: 12px; height: 12px; }
+  .compression-job > span { gap: 7px; }
+  .compression-job strong { font-size: 10px; }
+  .compression-job > progress { min-width: 15px; margin-left: 0; height: 3px; }
+  .compression-job > .button { font-size: 10px; padding: 4px 5px; min-height: 22px; gap: 4px; }
+  .compression-job > .button svg { width: 9px; height: 9px; }
+  .compression-error { padding: 10px 12px; gap: 6px; }
+  .compression-error > p { font-size: 10px; }
+  .compression-error > svg { width: 12px; height: 12px; }
+  .compression-export-bar { padding: 13px; border-radius: 10px; margin-top: 13px; gap: 12px; }
+  .compression-export-summary { gap: 8px; }
+  .compression-export-icon { width: 30px; height: 30px; border-radius: 7px; }
+  .compression-export-icon > svg { width: 14px; height: 14px; }
+  .compression-export-summary strong { font-size: 10px; }
+  .compression-export-summary p { font-size: 10px; margin-top: 4px; }
+  .compression-export-summary p > span { padding: 0 3px; }
+  .compression-export-actions { margin: 0; width: 100%; gap: 5px; justify-content: space-between; }
+  .compression-export-actions > .button { font-size: 10px; padding: 6px 7px; min-height: 27px; gap: 4px; }
+  .compression-export-actions > .button svg { width: 10px; height: 10px; }
+  .compression-apply { margin-left: auto; }
+}
+@media (max-width: 400px) {
+  .compression-source-copy > p { max-width: 245px; }
+  .compression-source-copy > strong { font-size: 10px; }
+  .compression-settings { gap: 0 15px; padding: 14px; }
+  .compression-view-controls { gap: 6px; }
+  .compression-view-controls > .segmented > button { padding: 6px 5px; }
+  .compression-zoom-controls { width: 154px; }
+  .compression-image-stage { height: 215px; }
+  .compression-export-actions > .button { font-size: 10px; padding: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .compression-spinner { animation-duration: .01ms; } }
+
+/* Keep working labels readable; smaller screens gain rows instead of smaller text. */
+.compression-panel .button { font-size: 12px; line-height: 1.45; min-height: 34px; }
+.compression-source-copy > strong { font-size: 13px; }
+.compression-source-copy > p { font-size: 11px; max-width: 500px; }
+.compression-count { font-size: 10px; padding: 2px 5px; }
+.compression-layout { grid-template-columns: 280px minmax(0, 1fr); }
+.compression-panel-heading > h3 { font-size: 13px; }
+.compression-panel-heading > span { font-size: 9px; letter-spacing: .3px; }
+.compression-field { margin-bottom: 20px; }
+.compression-field > label, .compression-field-row > label { font-size: 12px; line-height: 1.6; color: #647c55; }
+.compression-field > label > small { font-size: 10px; color: #8c9c7e; }
+.compression-field > select { font-size: 12px; height: 38px; padding: 8px 10px; }
+.compression-field-hint { font-size: 11px; line-height: 1.75; color: #87967a; }
+.compression-field-row > span { font-size: 12px; color: #72915c; }
+.compression-input-suffix { height: 38px; }
+.compression-input-suffix > input { height: 36px !important; font-size: 12px !important; }
+.compression-input-suffix > span { font-size: 11px; color: #8a9e7b; }
+.compression-scale-value > input { font-size: 11px !important; height: 29px !important; width: 56px; }
+.compression-scale-value > span { font-size: 11px; }
+.compression-scale-presets > button { min-height: 31px; padding: 6px 5px; font-size: 11px; }
+.compression-generate { font-size: 12px !important; min-height: 39px !important; }
+.compression-local-note > p { color: #8a9b7b; font-size: 10px; }
+.compression-local-note > svg { width: 12px; height: 12px; }
+.compression-metrics > div > span { color: #899b79; font-size: 11px; line-height: 1.6; }
+.compression-metrics strong { font-size: 22px; }
+.compression-metrics strong > small { font-size: 11px; color: #92a27f; }
+.compression-preview-toolbar h3 { font-size: 13px; flex-wrap: wrap; }
+.compression-preview-toolbar p { color: #899c78; font-size: 11px; }
+.compression-preview-toolbar > .button { font-size: 11px; flex-shrink: 0; color: #829771; }
+.compression-dirty, .compression-ready { font-size: 10px; line-height: 1.4; }
+.compression-help > p { color: #7e936d; font-size: 11px; }
+.compression-view-controls { flex-wrap: wrap; }
+.compression-view-controls > .segmented > button { font-size: 11px; min-height: 30px; padding: 6px 10px; }
+.compression-zoom-controls { width: 270px; }
+.compression-zoom-controls > span { font-size: 11px; min-width: 39px; color: #8b9f78; }
+.compression-zoom-controls > .button { font-size: 11px; padding: 5px 7px; }
+.compression-zoom-controls > .icon-button { width: 28px; height: 28px; }
+.compression-zoom-controls > .icon-button > svg { width: 12px; height: 12px; }
+.compression-pane-heading { flex-wrap: wrap; row-gap: 6px; align-items: baseline; }
+.compression-pane-heading > span:first-child { font-size: 12px; color: #71885f; }
+.compression-pane-heading small { font-size: 8px; }
+.compression-pane-heading > span:last-child { font-size: 10px; white-space: normal; color: #8d9f7e; line-height: 1.6; }
+.compression-preview-empty > strong { font-size: 12px; color: #809c69; }
+.compression-preview-empty > p { font-size: 11px; color: #95a783; }
+.compression-dimensions { flex-wrap: wrap; row-gap: 8px; }
+.compression-dimensions > span, .compression-dimensions > span:last-child { font-size: 10px; color: #8b9f78; flex-wrap: wrap; line-height: 1.6; }
+.compression-transport { flex-wrap: wrap; }
+.compression-playback-buttons > .icon-button { width: 29px; height: 29px; }
+.compression-playback-buttons > .compression-play { width: 33px; height: 33px; }
+.compression-playback-buttons > .icon-button > svg { width: 13px; height: 13px; }
+.compression-frame-position { font-size: 11px; }
+.compression-fps-label { font-size: 10px; color: #8c9f78; }
+.compression-thumbnail { width: 51px; height: 68px; padding: 3px; }
+.compression-thumbnail > img { height: 43px; }
+.compression-thumbnail > span { font-size: 10px; line-height: 13px; margin-top: 3px; }
+.compression-job, .compression-job strong { font-size: 11px; }
+.compression-error > p { font-size: 11px; }
+.compression-export-summary strong { font-size: 12px; }
+.compression-export-summary p { font-size: 10px; color: #8e9f7d; }
+.compression-export-bar { flex-wrap: wrap; }
+.compression-export-actions { flex-wrap: wrap; margin-left: auto; }
+.compression-export-actions > .button { font-size: 11px; min-height: 34px; padding: 7px 10px; }
+
+@media (max-width: 1150px) {
+  .compression-layout { grid-template-columns: 260px minmax(0, 1fr); }
+  .compression-source-bar { flex-wrap: wrap; }
+  .compression-source-copy { flex: 1; }
+  .compression-source-copy > p { white-space: normal; overflow-wrap: anywhere; }
+  .compression-source-actions { margin-left: auto; flex-wrap: wrap; }
+  .compression-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0; }
+  .compression-metrics > div { padding: 15px 17px; }
+  .compression-metrics > div:nth-child(2) { border-right: 0; }
+  .compression-metrics > div:nth-child(-n+2) { border-bottom: 1px solid #e8edde; }
+  .compression-metrics strong { font-size: 22px; }
+  .compression-preview-toolbar { align-items: flex-start; }
+  .compression-view-controls { align-items: center; }
+  .compression-zoom-controls { width: 100%; }
+  .compression-preview-grid { gap: 12px; }
+  .compression-pane-heading > span:first-child { font-size: 11px; }
+  .compression-pane-heading > span:last-child { font-size: 10px; }
+  .compression-image-stage { height: 300px; }
+}
+@media (max-width: 900px) {
+  .compression-layout { grid-template-columns: 1fr; }
+  .compression-settings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; padding: 20px; }
+  .compression-panel-heading { grid-column: 1/-1; margin-bottom: 23px; }
+  .compression-panel-heading > span { display: inline; }
+  .compression-field > label > small { display: inline; }
+  .compression-generate { align-self: center; }
+  .compression-local-note { align-self: center; margin-top: 0; }
+  .compression-source-actions { width: 100%; margin-left: 0; padding-top: 12px; border-top: 1px solid #e9efdf; }
+  .compression-preview-grid { gap: 15px; }
+  .compression-preview-card { padding: 19px; }
+  .compression-view-controls { flex-wrap: nowrap; }
+  .compression-zoom-controls { width: 285px; }
+  .compression-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .compression-metrics > div { border-bottom: 0 !important; border-right: 1px solid #e8edde; padding: 17px; }
+  .compression-metrics > div:nth-child(2) { border-right: 1px solid #e8edde; }
+  .compression-metrics > div:last-child { border-right: 0; }
+}
+@media (max-width: 700px) {
+  .compression-panel .button { font-size: 11px; min-height: 35px; line-height: 1.5; }
+  .compression-source-copy > strong { font-size: 12px; }
+  .compression-source-copy > p { max-width: none; font-size: 10px; line-height: 1.8; overflow-wrap: anywhere; }
+  .compression-source-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 7px; padding-top: 12px; }
+  .compression-source-actions > .button { padding: 7px 9px; font-size: 11px; justify-content: center; }
+  .compression-source-actions > .button:first-child { grid-column: 1/-1; }
+  .compression-source-actions .button svg { width: 13px; height: 13px; }
+  .compression-count { font-size: 10px; }
+  .compression-settings { padding: 17px; gap: 0 19px; }
+  .compression-panel-heading { gap: 7px; margin-bottom: 22px; }
+  .compression-panel-heading > h3 { font-size: 13px; }
+  .compression-panel-heading > span { font-size: 8px; }
+  .compression-field:has(#compression-fps), .compression-field:has(#compression-algorithm) { grid-column: 1/-1; }
+  .compression-field { margin-bottom: 23px; }
+  .compression-field > label, .compression-field-row > label { font-size: 11px; line-height: 1.7; }
+  .compression-field > label > small { font-size: 10px; margin-left: 8px; }
+  .compression-field-row { gap: 7px; }
+  .compression-field-row > span { font-size: 11px; white-space: nowrap; }
+  .compression-field > select { font-size: 12px; height: 38px; padding: 8px 10px; }
+  .compression-field-hint { font-size: 10px; line-height: 1.8; }
+  .compression-input-suffix { height: 38px; }
+  .compression-input-suffix > input { height: 36px !important; font-size: 12px !important; padding: 7px 9px !important; }
+  .compression-input-suffix > span { font-size: 11px; }
+  .compression-scale-value > input { width: 48px; font-size: 11px !important; height: 28px !important; }
+  .compression-scale-value > span { font-size: 11px; }
+  .compression-panel .compression-scale-presets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; }
+  .compression-panel .compression-scale-presets > button { font-size: 11px; min-height: 31px; padding: 5px 3px; }
+  .compression-generate { grid-column: 1/-1; min-height: 39px !important; font-size: 12px !important; }
+  .compression-local-note { grid-column: 1/-1; margin-top: 13px; gap: 6px; }
+  .compression-local-note > p { font-size: 10px; }
+  .compression-local-note > svg { width: 12px; height: 12px; }
+  .compression-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .compression-metrics > div { padding: 16px; }
+  .compression-metrics > div > span { font-size: 11px; margin-bottom: 8px; }
+  .compression-metrics > div:nth-child(2) { border-right: 0; }
+  .compression-metrics > div:nth-child(-n+2) { border-bottom: 1px solid #e8edde !important; }
+  .compression-metrics strong { font-size: 22px; gap: 5px; }
+  .compression-metrics strong > small { font-size: 11px; }
+  .compression-metrics strong > svg { width: 12px; height: 12px; }
+  .compression-preview-card { padding: 16px; }
+  .compression-preview-toolbar { flex-wrap: wrap; gap: 9px; }
+  .compression-preview-toolbar h3 { font-size: 13px; gap: 7px; }
+  .compression-preview-toolbar p { font-size: 10px; line-height: 1.8; }
+  .compression-preview-toolbar > .button { font-size: 11px; min-height: 31px; padding: 5px 7px; margin-left: auto; }
+  .compression-preview-toolbar > .button svg { width: 13px; height: 13px; }
+  .compression-dirty, .compression-ready { font-size: 10px; padding: 4px 5px; }
+  .compression-help > p { font-size: 10px; }
+  .compression-help > svg { width: 13px; height: 13px; }
+  .compression-view-controls { flex-wrap: wrap; align-items: stretch; gap: 12px; margin: 16px 0; }
+  .compression-view-controls > .segmented { display: flex; width: 100%; padding: 3px; }
+  .compression-view-controls > .segmented > button { flex: 1; font-size: 11px; min-height: 32px; padding: 7px 9px; }
+  .compression-zoom-controls { width: 100%; gap: 7px; }
+  .compression-zoom-controls > .icon-button { width: 29px; height: 29px; }
+  .compression-zoom-controls > .icon-button > svg { width: 12px; height: 12px; }
+  .compression-zoom-controls > span { font-size: 11px; min-width: 39px; }
+  .compression-zoom-controls > .button { font-size: 11px; padding: 5px 7px; min-height: 29px; }
+  .compression-preview-grid { grid-template-columns: 1fr; gap: 20px; }
+  .compression-pane-heading { gap: 8px; margin-bottom: 9px; }
+  .compression-pane-heading > span:first-child { font-size: 12px; gap: 6px; }
+  .compression-pane-heading > span:last-child { font-size: 10px; }
+  .compression-pane-heading i { width: 4px; height: 4px; }
+  .compression-heading-dot { padding: 0 4px; }
+  .compression-image-stage { height: 300px; border-radius: 7px; }
+  .compression-stage-label { font-size: 8px; left: 9px; bottom: 9px; }
+  .compression-preview-empty > strong { font-size: 12px; }
+  .compression-preview-empty > p { font-size: 10px; }
+  .compression-dimensions { row-gap: 8px; padding-bottom: 14px; margin-top: 14px; }
+  .compression-dimensions > span, .compression-dimensions > span:last-child { font-size: 10px; line-height: 1.8; }
+  .compression-transport { gap: 10px; padding-top: 14px; }
+  .compression-playback-buttons { gap: 5px; }
+  .compression-playback-buttons > .icon-button { width: 29px; height: 29px; }
+  .compression-playback-buttons > .compression-play { width: 33px; height: 33px; }
+  .compression-playback-buttons > .icon-button > svg { width: 13px; height: 13px; }
+  .compression-frame-position { font-size: 11px; }
+  .compression-frame-seek { order: 4; flex: 1 0 100%; margin: 6px 0; }
+  .compression-fps-label { font-size: 10px; margin-left: auto; }
+  .compression-filmstrip { padding-top: 15px; gap: 7px; }
+  .compression-thumbnail { width: 51px; height: 68px; padding: 3px; }
+  .compression-thumbnail > img { height: 43px; }
+  .compression-thumbnail > span { font-size: 10px; line-height: 13px; margin-top: 3px; }
+  .compression-job { flex-wrap: wrap; gap: 8px; font-size: 11px; padding: 12px; }
+  .compression-job strong { font-size: 11px; }
+  .compression-job > progress { order: 4; flex: 1 0 100%; height: 4px; }
+  .compression-job > .button { font-size: 11px; min-height: 30px; padding: 5px 7px; }
+  .compression-error > p { font-size: 11px; }
+  .compression-export-bar { padding: 15px; gap: 15px; }
+  .compression-export-summary { align-items: flex-start; }
+  .compression-export-summary strong { font-size: 12px; }
+  .compression-export-summary p { font-size: 10px; line-height: 1.8; }
+  .compression-export-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 8px; margin: 0; }
+  .compression-export-actions > .button { font-size: 11px; padding: 8px; min-height: 36px; gap: 6px; }
+  .compression-export-actions > .button svg { width: 13px; height: 13px; }
+  .compression-apply { margin-left: 0; }
+}

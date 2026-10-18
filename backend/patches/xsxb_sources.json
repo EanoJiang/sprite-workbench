@@ -1,0 +1,33 @@
+{
+  "revision": "cb061e15132b9250feebd34a18a3fd023197837c",
+  "source_url": "https://github.com/sparklecatta-lang/XSXB-Frame-Tuner",
+  "license": "MIT",
+  "license_file": "docs/licenses/LICENSE.XSXB-Frame-Tuner",
+  "newlines": "SHA256 values use LF; input and output support LF and CRLF.",
+  "files": {
+    "tools/animation_tuner/public/app.js": {
+      "upstream_sha256": "b1071751224c33c287dd3f79d20fcfbb4ec9fbbde7b27a114e9de6d247e300de",
+      "framecraft_sha256": "d4a7d692714137f50148f384fb666fbc52cf996f8e56a9071de91cdad6b93835"
+    },
+    "tools/animation_tuner/public/index.html": {
+      "upstream_sha256": "47994ee07ff5081ff6610387fc2f0ea34ebf364cffdcb6ae3f92dff62b8077e7",
+      "framecraft_sha256": "97fb8e32062c1bc7eb00f04ba3aeaf14f1314f6414a24482b872ffdb61cc2871"
+    },
+    "tools/frame_tuner_lite/import_frames.js": {
+      "upstream_sha256": "e1d2c0494c60849d265f7202143dd0b5b41e3d4a96fe8c8a745ea255eebcc466",
+      "framecraft_sha256": "2bd5831685dc5b5850eb83a1afe29789960f6383cf28262dd0c9ba18da23d741"
+    },
+    "tools/frame_tuner_lite/public/lite.css": {
+      "upstream_sha256": "f2254eeea0a58c2af0b78b407e56746448ff4b2844fc9e3968c841bb11a7cbfb",
+      "framecraft_sha256": "19a5d9a5ad629b6ba48210fe243c866c3473af07825bb704686fd2795c53892a"
+    },
+    "tools/frame_tuner_lite/public/lite.js": {
+      "upstream_sha256": "445319121682705e7a808263f5d660dc151c1bb1cc4145a70470be662a76ff1e",
+      "framecraft_sha256": "e8c561fa54557c14cfaacb859695c424db8c20f730d7ca0a8b1af40a8166e497"
+    },
+    "tools/frame_tuner_lite/server.js": {
+      "upstream_sha256": "97c1258e0dd4cca44cef3ba430eee4a6059f07230792d4977fb7f8b9cecb1a62",
+      "framecraft_sha256": "71e995dba8b62d2ce7e3b8ab8127cdb3e25c5e18cef34594ae932bcc0562e73d"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+.sheet-layout-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; min-width: 0; }
+.sheet-layout-controls > label { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.sheet-layout-controls > label > span { color: #71886f; font-size: 11px; }
+.sheet-layout-controls input[type='number'] { width: 100%; min-width: 0; height: 36px; font-variant-numeric: tabular-nums; }

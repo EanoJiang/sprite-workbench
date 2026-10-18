@@ -1,0 +1,10 @@
+.frame-grid-fit { position: relative; flex: 1 1 0%; width: 100%; height: 100%; min-width: 0; min-height: 0; overflow: hidden; padding: 0; }
+.frame-grid-fit-bounds { position: absolute; overflow: hidden; }
+.frame-grid-fit .frame-grid.fitted-frame-grid, #step-5 .frame-grid-fit .frame-grid.fitted-frame-grid { position: absolute; left: 0; top: 0; box-sizing: border-box; display: grid; margin: 0; min-width: 0; max-width: none; align-content: start; justify-content: start; transform-origin: 0 0; }
+#step-5 .frame-grid-fit .frame-card { box-sizing: border-box; display: flex; flex-direction: column; width: 100%; height: var(--fit-card-height); min-width: 0; min-height: 0; margin: 0; padding: 7px; gap: 0; border-width: 1px; transform: none; }
+#step-5 .frame-grid-fit .frame-card > button.frame-thumb { box-sizing: border-box; width: 100%; height: var(--fit-thumb-height); min-height: 0; flex: 0 0 var(--fit-thumb-height); margin: 0; padding: 0; aspect-ratio: auto; }
+#step-5 .frame-grid-fit .frame-card > .frame-meta { box-sizing: border-box; flex: 0 0 32px; height: 32px; min-height: 32px; margin: 0; padding: 8px 0 0; gap: 5px; align-items: center; overflow: hidden; line-height: 16px; }
+#step-5 .frame-grid-fit .frame-card > .frame-meta strong, #step-5 .frame-grid-fit .frame-card > .frame-meta span:last-child { font-size: 10px; line-height: 16px; }
+#step-5 .frame-grid-fit .frame-card > .frame-checkbox { width: 19px !important; height: 19px !important; top: 8px; right: 8px; }
+#step-5 .frame-grid-fit .frame-card > .frame-checkbox > span { width: 19px; height: 19px; }
+#step-5 .frame-grid-fit .frame-card > .frame-checkbox > span svg { width: 12px; height: 12px; }

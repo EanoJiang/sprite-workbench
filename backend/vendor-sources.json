@@ -1,0 +1,68 @@
+{
+  "CorridorKey": {
+    "repository": "https://github.com/nikopueringer/CorridorKey",
+    "revision": "97e55a453060745bead1befd293f6e523c4b845c",
+    "path": "vendor/CorridorKey",
+    "engine": "CorridorKeyModule/inference_engine.py",
+    "license": "vendor/CorridorKey/LICENSE",
+    "license_name": "CorridorKey Licence 1.0; CC BY-NC-SA 4.0 with additional terms",
+    "modifications": "No upstream code modifications. Local adapter disables torch.compile and converts linear-premultiplied RGBA to straight sRGB PNG.",
+    "green_weights": {
+      "repository": "https://huggingface.co/nikopueringer/CorridorKey_v1.0",
+      "revision": "f6386ddf042d8e92aeb5fd16cb9b101cff508195",
+      "filename": "CorridorKey_v1.0.safetensors",
+      "size_bytes": 398849256,
+      "sha256": "74d614f7d92fc559a118c30a7deadedc3cacd8ef83dcb85a030d0bed7af8b20b"
+    },
+    "blue_weights": {
+      "repository": "https://huggingface.co/nikopueringer/CorridorKeyBlue_1.0",
+      "revision": "51e6ccaa4b703f54be20a72ac2c37784fb9ba1cd",
+      "filename": "CorridorKeyBlue_1.0.safetensors"
+    }
+  },
+  "XSXB-Frame-Tuner": {
+    "repository": "https://github.com/sparklecatta-lang/XSXB-Frame-Tuner",
+    "revision": "cb061e15132b9250feebd34a18a3fd023197837c",
+    "path": "vendor/XSXB-Frame-Tuner",
+    "entrypoint": "tools/frame_tuner_lite/server.js",
+    "edition": "Frame Tuner Lite",
+    "license": "vendor/XSXB-Frame-Tuner/LICENSE",
+    "license_url": "https://github.com/sparklecatta-lang/XSXB-Frame-Tuner/blob/cb061e15132b9250feebd34a18a3fd023197837c/LICENSE",
+    "license_name": "MIT",
+    "copyright": "Copyright (c) 2026 sparklecatta-lang",
+    "integration": "Official Lite web editor and importer; project-isolated transfers of selected PNG frames. Full Godot mode and repository skill installation are not used.",
+    "compatibility_patches": {
+      "script": "patches/apply_xsxb_compat.py",
+      "source_bundle": "patches/xsxb_sources.zip",
+      "source_manifest": "patches/xsxb_sources.json",
+      "review_diff": "patches/xsxb-local.patch",
+      "framecraft-xsxb-integration-v1": "Replay six audited source files for direct canvas move/scale controls, anchored PNG imports, saved tuning return and parent-window state synchronization. Validate the full source batch before writing; preserve user data and reject unknown source edits.",
+      "shared-preset-migration-revision-v1": "Exclude migratedProjectIds bookkeeping from shared-preset revision hashing while preserving stale-save checks for project data and actual preset changes.",
+      "lite-fit-view-v1": "Fit the Lite preview camera to the current transformed frame bounds. Does not modify animation transforms, source canvases or export data."
+    }
+  },
+  "BiRefNet": {
+    "repository": "https://github.com/ZhengPeng7/BiRefNet",
+    "license": "MIT (official author's model code)",
+    "execution": "Pinned official Hugging Face remote model code, matching revision and code_revision; safetensors weights only.",
+    "variants": {
+      "standard": {
+        "repository": "https://huggingface.co/ZhengPeng7/BiRefNet",
+        "revision": "e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4",
+        "filename": "model.safetensors",
+        "size_bytes": 444473596,
+        "sha256": "9ab37426bf4de0567af6b5d21b16151357149139362e6e8992021b8ce356a154"
+      },
+      "hr-matting": {
+        "repository": "https://huggingface.co/ZhengPeng7/BiRefNet_HR-matting",
+        "revision": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f",
+        "filename": "model.safetensors"
+      },
+      "lite": {
+        "repository": "https://huggingface.co/ZhengPeng7/BiRefNet_lite",
+        "revision": "aa62cd87eafb9cc43056d08ef3615a14628b831d",
+        "filename": "model.safetensors"
+      }
+    }
+  }
+}

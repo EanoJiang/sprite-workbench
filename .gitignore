@@ -1,0 +1,61 @@
+# JavaScript dependencies and build output
+node_modules/
+/dist/
+*.tsbuildinfo
+
+# Python environments, bytecode and tool caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Local configuration and credentials (keep shareable examples)
+.env
+.env.*
+*.local
+*.local.*
+!.env.example
+!.env.*.example
+.npmrc
+.pypirc
+
+# Downloads: recreated by setup.ps1 or the model preparation controls
+/backend/models/
+/backend/vendor/
+/backend/runtime/
+
+# User media, saved projects and transfers
+/FrameAnimProjectList/
+*.framecraft/
+.trash/
+/backend/tuner-data/
+
+# Temporary data, caches and logs
+.tmp/
+.cache/
+logs/
+*.log
+*.pid
+
+# Test reports and coverage (docs/images/ contains the published previews)
+/test-results/
+/playwright-report/
+/blob-report/
+coverage/
+.coverage
+.coverage.*
+htmlcov/
+
+# Editor and operating-system files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini

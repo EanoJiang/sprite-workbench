@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "animationName": "583a9a70c9d0f507c440e42d79b70dc8",
+  "fps": 12,
+  "frames": [
+    {
+      "id": "mvd2982p-z8robu-1",
+      "name": "frame_001.png",
+      "sourceIndex": 1,
+      "time": 0.0,
+      "width": 1243,
+      "height": 720,
+      "selected": true,
+      "file": "frames/frame_001.png"
+    },
+    {
+      "id": "mvd2982p-z8robu-5",
+      "name": "frame_002.png",
+      "sourceIndex": 5,
+      "time": 0.13333333333333333,
+      "width": 1243,
+      "height": 720,
+      "selected": true,
+      "file": "frames/frame_002.png"
+    },
+    {
+      "id": "mvd2982p-z8robu-9",
+      "name": "frame_003.png",
+      "sourceIndex": 9,
+      "time": 0.26666666666666666,
+      "width": 1243,
+      "height": 720,
+      "selected": true,
+      "file": "frames/frame_003.png"
+    },
+    {
+      "id": "mvd2982p-z8robu-13",
+      "name": "frame_004.png",
+      "sourceIndex": 13,
+      "time": 0.4,
+      "width": 1243,
+      "height": 720,
+      "selected": true,
+      "file": "frames/frame_004.png"
+    },
+    {
+      "id": "mvd2982p-z8robu-17",
+      "name": "frame_005.png",
+      "sourceIndex": 17,
+      "time": 0.5333333333333333,
+      "width": 1243,
+      "height": 720,
+      "selected": true,
+      "file": "frames/frame_005.png"
+    },
+    {
+      "id": "mvd2982p-z8robu-21",
+      "name": "frame_006.png",
+      "sourceIndex": 21,
+      "time": 0.6666666666666666,
+      "width": 1243,
+      "height": 720,
+      "selected": true,
+      "file": "frames/frame_006.png"
+    },
+    {
+      "id": "mvd2982p-z8robu-25",
+      "name": "frame_007.png",
+      "sourceIndex": 25,
+      "time": 0.8,
+      "width": 1243,
+      "height": 720,
+      "selected": true,
+      "file": "frames/frame_007.png"
+    },
+    {
+      "id": "mvd2982p-z8robu-29",
+      "name": "frame_008.png",
+      "sourceIndex": 29,
+      "time": 0.9333333333333333,
+      "width": 1243,
+      "height": 720,
+      "selected": true,
+      "file": "frames/frame_008.png"
+    },
+    {
+      "id": "mvd2982p-z8robu-33",
+      "name": "frame_009.png",
+      "sourceIndex": 33,
+      "time": 1.0666666666666667,
+      "width": 1243,
+      "height": 720,
+      "selected": true,
+      "file": "frames/frame_009.png"
+    },
+    {
+      "id": "mvd2982p-z8robu-37",
+      "name": "frame_010.png",
+      "sourceIndex": 37,
+      "time": 1.2,
+      "width": 1243,
+      "height": 720,
+      "selected": true,
+      "file": "frames/frame_010.png"
+    }
+  ],
+  "source": {
+    "name": "583a9a70c9d0f507c440e42d79b70dc8.mp4",
+    "type": "video/mp4",
+    "fps": 30,
+    "file": "source.mp4"
+  }
+}
