@@ -20,6 +20,12 @@ function runtime(images: Record<string, LoopImage>) {
 const image = (data: number[], changes: Partial<LoopImage> = {}): LoopImage => ({ ...pixels(data, changes.width ?? 1), blob: png, ...changes });
 
 describe('loop endpoint correction', () => {
+  it('copies endpoint alignment as well as pixels so export cannot offset the tail', async () => {
+    const { io } = runtime({ 'parent:0': image([40, 60, 80, 255]), 'parent:1': image([80, 60, 40, 255]) });
+    const result = await correctLoopFrames([frame(0, { anchor: 'center' }), frame(1, { anchor: 'bottom' })], undefined, { io });
+    expect(result.frames[1].anchor).toBe('center');
+    expect(result.frames[1].id).toBe('id-1');
+  });
   it('copies exact first PNG bytes to the last endpoint while preserving order and source identities', async () => {
     const input = [frame(0), frame(1), frame(2, { name: 'tail.png', width: 2, selected: false })];
     const { io, created } = runtime({ 'parent:0': image([200, 40, 10, 128]), 'parent:2': image([0, 0, 0, 0, 255, 255, 255, 255], { width: 2 }) });

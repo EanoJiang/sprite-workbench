@@ -176,6 +176,14 @@ def references(manifest: Any) -> dict[str, tuple[int, int] | None]:
             add_asset(frame.get("file"), dimensions)
 
     frame_group(manifest.get("frames", []))
+    if "sequenceInputs" in manifest:
+        frame_group(manifest["sequenceInputs"])
+    matting = manifest.get("matting")
+    if matting is not None:
+        if not isinstance(matting, dict) or not isinstance(matting.get("options"), dict):
+            raise HTTPException(400, "工程抠图参数无效。")
+        if matting.get("frames") is not None:
+            frame_group(matting["frames"])
     source = manifest.get("source")
     if source is not None:
         if not isinstance(source, dict):

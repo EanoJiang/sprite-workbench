@@ -31,19 +31,19 @@ try {
   const frame = await (await iframe.elementHandle()).contentFrame();
   await frame.waitForSelector('#save', { state: 'visible', timeout: 90000 });
   await frame.waitForFunction(() => Boolean(window.XsxbFrameTunerLite?.current()?.ready), undefined, { timeout: 90000 });
-  await expect(page.getByRole('button', { name: '保存精调结果返回 06 动画帧选取与预览', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: '保存精调结果返回 05 动画帧选取与预览', exact: true })).toBeVisible();
   await frame.locator('#adjustGroup').check();
   const before = Number(await frame.locator('#baseX').inputValue());
   await frame.locator('button.numberStep[data-step-target="baseX"][data-step-dir="1"]').click();
   await expect(frame.locator('body')).toHaveClass(/hasUnsavedChanges/);
-  await page.getByRole('button', { name: '保存精调结果返回 06 动画帧选取与预览', exact: true }).click();
+  await page.getByRole('button', { name: '保存精调结果返回 05 动画帧选取与预览', exact: true }).click();
   await expect(page.locator('#tab-workbench')).toHaveAttribute('aria-selected', 'true', { timeout: 120000 });
   await expect.poll(() => page.evaluate(() => location.hash)).toBe('#workbench');
   await expect(page.locator('.frame-card')).toHaveCount(builtInExample.frames.filter(frame => frame.selected).length);
   const returnedSize = await page.locator('.frame-card img').first().evaluate(image => ({ width: image.naturalWidth, height: image.naturalHeight }));
   expect(returnedSize).toEqual(originalSize);
-  await expect.poll(() => page.locator('#step-6').evaluate(element => element.getBoundingClientRect().top)).toBeLessThan(900);
-  await expect(page.getByRole('button', { name: '保存精调结果返回 06 动画帧选取与预览', exact: true })).toHaveCount(0);
+  await expect.poll(() => page.locator('#step-5').evaluate(element => element.getBoundingClientRect().top)).toBeLessThan(900);
+  await expect(page.getByRole('button', { name: '保存精调结果返回 05 动画帧选取与预览', exact: true })).toHaveCount(0);
   if (errors.length) throw new Error(errors.join('\n'));
   console.log(JSON.stringify({ passed: true, sourceOffset: before, returnedFrames: builtInExample.frames.filter(frame => frame.selected).length, originalSize, returnedSize }));
 } finally {

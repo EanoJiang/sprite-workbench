@@ -18,6 +18,35 @@ function manifest() {
 describe('persistent animation projects', () => {
   afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.clearAllMocks(); });
 
+  it('restores image sequence preview mode without changing frame order or selections', async () => {
+    const data = { ...manifest(), workspace: { ...workspace, sequenceMode: true } };
+    vi.stubGlobal('fetch', vi.fn(async () => Response.json(data)));
+    const restored = await loadProject('FrameAnimProjectList', 'saved');
+    expect(restored.workspace.sequenceMode).toBe(true);
+    expect(restored.frames.map(frame => [frame.id, frame.selected])).toEqual([['b', false]]);
+  });
+
+  it('round trips original sequence assets separately from sampled output', async () => {
+    const project = snapshot();
+    project.workspace = { ...project.workspace, sequenceMode: true };
+    project.sequenceInputs = [frame({ id: 'original', url: 'blob:original', selected: false })];
+    let stored: Record<string, unknown> | undefined;
+    vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
+      if (url.startsWith('/api/projects?')) {
+        const archive = await JSZip.loadAsync(await ((init!.body as FormData).get('archive') as Blob).arrayBuffer());
+        stored = JSON.parse(await archive.file('project.json')!.async('string'));
+        expect(await archive.file('sequence-inputs/0001.png')!.async('uint8array')).toEqual(new Uint8Array([7, 8, 9]));
+        return Response.json({ id: 'saved', project: {} });
+      }
+      if (url.startsWith('/api/projects/saved?')) return Response.json(stored);
+      return new Response(new Blob([new Uint8Array([7, 8, 9])], { type: 'image/png' }));
+    }));
+    await saveProject('FrameAnimProjectList', project);
+    const loaded = await loadProject('FrameAnimProjectList', 'saved');
+    expect(loaded.sequenceInputs).toMatchObject([{ id: 'original', selected: false, url: '/api/projects/saved/files/sequence-inputs/0001.png?directory=FrameAnimProjectList' }]);
+    expect(loaded.frames.map(frame => frame.id)).toEqual(['a', 'b']);
+  });
+
   it('saves an independent archive with exact assets, frame order, selections, and panel settings', async () => {
     const rawBytes = new Uint8Array([1, 2, 3]);
     const secondBytes = new Uint8Array([4, 5, 6]);

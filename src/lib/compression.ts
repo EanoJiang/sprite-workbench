@@ -15,6 +15,21 @@ function aborted(signal?: AbortSignal): void { if (signal?.aborted) throw new DO
 
 export function releaseCompressionFrames(frames: { url: string }[]): void { frames.forEach(frame => URL.revokeObjectURL(frame.url)); }
 
+/** Saved snapshots must match pixels as well as metadata before reusing their results. */
+export async function compressionSourcesMatch(current: CompressionSourceFrame[], saved: CompressionSourceFrame[], signal?: AbortSignal): Promise<boolean> {
+  aborted(signal);
+  if (current.length !== saved.length) return false;
+  for (const [index, frame] of current.entries()) {
+    const previous = saved[index];
+    if (frame.name !== previous.name || frame.sourceIndex !== previous.sourceIndex || frame.time !== previous.time || frame.width !== previous.width || frame.height !== previous.height || frame.blob.size !== previous.blob.size) return false;
+    const [a, b] = await Promise.all([frame.blob.arrayBuffer(), previous.blob.arrayBuffer()]);
+    aborted(signal);
+    const bytes = new Uint8Array(a); const savedBytes = new Uint8Array(b);
+    if (bytes.some((value, offset) => value !== savedBytes[offset])) return false;
+  }
+  return true;
+}
+
 async function sourceFrame(blob: Blob, name: string, sourceIndex: number, time: number, signal?: AbortSignal): Promise<CompressionSourceFrame> {
   aborted(signal);
   if (blob.size > MAX_FILE_BYTES) throw new Error(`「${name}」超过 16 MB，请先缩小图片。`);

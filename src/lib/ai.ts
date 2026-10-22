@@ -24,8 +24,8 @@ export async function prepareModels(options: ProcessOptions): Promise<BackendHea
   return response.json();
 }
 
-export async function processFrame(input: HTMLCanvasElement, options: ProcessOptions, signal?: AbortSignal): Promise<HTMLCanvasElement> {
-  if (!options.removeBackground || !options.engine || options.engine === 'chroma' || options.engine === 'luma') return processCanvas(input, options);
+export async function processFrame(input: HTMLCanvasElement, options: ProcessOptions, signal?: AbortSignal, preserveCanvas = false): Promise<HTMLCanvasElement> {
+  if (!options.removeBackground || !options.engine || options.engine === 'chroma' || options.engine === 'luma') return processCanvas(input, options, preserveCanvas);
   const form = new FormData();
   form.set('image', await canvasToBlob(input), 'frame.png');
   form.set('mode', options.engine);
@@ -45,6 +45,6 @@ export async function processFrame(input: HTMLCanvasElement, options: ProcessOpt
     const context = canvas.getContext('2d');
     if (!context) throw new Error('无法创建 AI 结果画布');
     context.drawImage(bitmap, 0, 0);
-    return finalizeMatteCanvas(canvas, options, input);
+    return finalizeMatteCanvas(canvas, options, input, preserveCanvas);
   } finally { bitmap.close(); }
 }

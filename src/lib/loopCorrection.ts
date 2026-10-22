@@ -159,7 +159,7 @@ export async function correctLoopFrames(input: Frame[], settings: LoopCorrection
       onProgress?.(index - startIndex + 1, transitionFrames);
     }
     // An exact first-frame PNG copy is deliberate: blending alone cannot guarantee matching final pixels.
-    frames[lastIndex] = { ...frames[lastIndex], url: create(firstPng), width: first.width, height: first.height };
+    frames[lastIndex] = { ...frames[lastIndex], url: create(firstPng), width: first.width, height: first.height, anchor: frames[0].anchor };
     checkAbort(signal); onProgress?.(transitionFrames, transitionFrames); checkAbort(signal);
     return { frames, ownedUrls, changedCount: transitionFrames + (isPng ? 0 : 1), originalDifference, finalDifference: compareLoopPixels(first, first) };
   } catch (error) { releaseLoopCorrection({ ownedUrls }, io.revokeUrl); throw error; }

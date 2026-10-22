@@ -603,13 +603,13 @@ input[type='checkbox'] {
   background: var(--pixel-red);
 }
 
-#step-5 .animation-card > .panel-heading > .badge {
+:is(#step-1, #step-3) .animation-card > .panel-heading > .badge {
   color: var(--pixel-blue-dark);
   border-color: var(--pixel-blue);
   background: var(--teal-pale);
 }
 
-#step-5 .animation-controls .play-button,
+:is(#step-1, #step-3) .animation-controls .play-button,
 .animation-controls .play-button {
   color: #fff;
   background: var(--pixel-red);
@@ -617,17 +617,17 @@ input[type='checkbox'] {
   border-radius: 0;
 }
 
-#step-5 .frame-card.selected {
+:is(#step-1, #step-3) .frame-card.selected {
   border-color: var(--pixel-red) !important;
   background: #fff7ef;
 }
 
-#step-5 .frame-card.playing {
+:is(#step-1, #step-3) .frame-card.playing {
   border-color: var(--pixel-blue) !important;
   box-shadow: 0 0 0 2px var(--pixel-blue) !important;
 }
 
-#step-5 .frame-checkbox > input:checked + span {
+:is(#step-1, #step-3) .frame-checkbox > input:checked + span {
   background: var(--pixel-red);
   border-color: var(--pixel-red-dark);
 }
@@ -714,8 +714,7 @@ input[type='checkbox'] {
 #step-4,
 #step-5,
 #step-6,
-#step-7,
-#step-8 {
+#step-7 {
   background: #fff;
 }
 

@@ -13,7 +13,7 @@ export default function SourceHeader({ source, disabled, onClear, onHelp }: {
     <div className="source-header-brand">
       <a href="#" aria-label="帧间首页">
         <svg className="source-header-logo" viewBox="0 0 40 40" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="7" fill="#fffef8" stroke="currentColor" strokeWidth="2.5" /><path d="M10 30 29 11" stroke="currentColor" strokeWidth="8" /><circle cx="12" cy="27" r="7" fill="#ff3554" /><circle cx="27" cy="12" r="6" fill="#168b65" /></svg>
-        <span><small>SPRITE VIDEO LAB</small><strong>Sprite 资产处理台</strong></span>
+        <span><small>2DWorkBench</small><strong>Sprite 资产处理台</strong></span>
       </a>
       <button className="source-header-clear" type="button" aria-label="清空当前素材" title="清空当前素材和帧列表；已保存工程保留" disabled={disabled || !source} onClick={onClear}><Trash2 size={17} /></button>
     </div>

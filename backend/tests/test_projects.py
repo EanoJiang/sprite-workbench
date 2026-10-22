@@ -63,6 +63,33 @@ def test_empty_default_does_not_create_directory(setup):
     assert not (tmp / "FrameAnimProjectList").exists()
 
 
+def test_original_sequence_assets_are_saved_and_validated(setup):
+    client, _ = setup
+    data = manifest(sequenceInputs=[frame(file="sequence-inputs/0001.png", selected=False)])
+    assets = {"frames/0001.png": png(), "sequence-inputs/0001.png": png((255, 0, 0, 128))}
+    response = save(client, payload=archive(data, assets))
+    assert response.status_code == 200, response.text
+    saved = response.json()
+    loaded = client.get(f"/api/projects/{saved['id']}")
+    assert loaded.json()["sequenceInputs"] == data["sequenceInputs"]
+    assert client.get(f"/api/projects/{saved['id']}/files/sequence-inputs/0001.png").content == assets["sequence-inputs/0001.png"]
+    data["sequenceInputs"][0]["width"] = 4
+    assert save(client, payload=archive(data, assets)).status_code == 400
+
+
+def test_matting_stage_assets_are_saved_and_validated(setup):
+    client, _ = setup
+    data = manifest(matting={"options": {"removeBackground": True}, "frames": [frame(file="matting/0001.png")]})
+    assets = {"frames/0001.png": png(), "matting/0001.png": png((255, 0, 0, 128))}
+    response = save(client, payload=archive(data, assets))
+    assert response.status_code == 200, response.text
+    saved = response.json()
+    assert client.get(f"/api/projects/{saved['id']}").json()["matting"] == data["matting"]
+    assert client.get(f"/api/projects/{saved['id']}/files/matting/0001.png").content == assets["matting/0001.png"]
+    data["matting"]["frames"][0]["width"] = 4
+    assert save(client, payload=archive(data, assets)).status_code == 400
+
+
 def test_real_asset_bytes_and_complete_state_round_trip_in_chinese_path(setup):
     client, tmp = setup
     directory = tmp / "动画 工程"

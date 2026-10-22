@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import {
-  compressFrame, compressionResizeMode, compressionSettingsKey, defaultCompressionSettings, importCompressionFiles,
+  compressFrame, compressionResizeMode, compressionSettingsKey, compressionSourcesMatch, defaultCompressionSettings, importCompressionFiles,
   releaseCompressionFrames, snapshotCompressionFrames,
   type CompressionSourceFrame,
 } from './compression';
@@ -28,6 +28,16 @@ afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 const file = (name: string, content = name) => new File([content], name, { type: 'image/png' });
 const parentFrame = (index: number): Frame => ({ id: `parent-${index}`, name: `frame_${index}.png`, sourceIndex: index * 4, time: index / 12, url: `blob:parent-${index}`, width: 100, height: 80, selected: true });
 const source = (): CompressionSourceFrame => ({ id: 'source', name: 'walk/frame_013.png', sourceIndex: 13, time: .5, url: 'blob:source', blob: new Blob(['original PNG bytes'], { type: 'image/png' }), width: 100, height: 80 });
+
+describe('restored compression inputs', () => {
+  it('compares actual bytes even when filenames and frame metadata match', async () => {
+    const original = source();
+    expect(await compressionSourcesMatch([original], [{ ...original, id: 'restored', url: 'blob:restored', blob: new Blob(['original PNG bytes']) }])).toBe(true);
+    expect(await compressionSourcesMatch([original], [{ ...original, blob: new Blob(['modified PNG bytes']) }])).toBe(false);
+    expect(await compressionSourcesMatch([original], [{ ...original, name: 'other.png' }])).toBe(false);
+    expect(await compressionSourcesMatch([original], [])).toBe(false);
+  });
+});
 
 describe('independent compression imports', () => {
   it('sorts numeric filenames, keeps original bytes and creates independent URLs', async () => {

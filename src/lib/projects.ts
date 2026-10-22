@@ -4,7 +4,7 @@ import { defaultOptions } from '../types';
 import { loadMedia, releaseMedia } from './media';
 import { defaultCompressionSettings } from './compression';
 import type { CompressionSettings, CompressionSourceFrame } from './compression';
-import type { CompressionProjectState, LoopCorrectionProjectState, SmoothingProjectState } from './projectPanelState';
+import type { CompressionProjectState, LoopCorrectionProjectState, MattingProjectState, SmoothingProjectState } from './projectPanelState';
 import { restoreTaskInfo } from './taskInfo';
 import type { ProcessingTaskInfo } from './taskInfo';
 import type { LoopDifference } from './loopCorrection';
@@ -20,17 +20,20 @@ export interface ProjectWorkspace {
   sheetColumns: number | 'auto';
   sheetRows?: number;
   background?: 'checker' | 'dark' | 'white' | 'rose';
+  sequenceMode?: boolean;
   taskInfo?: ProcessingTaskInfo;
 }
 export interface ProjectSnapshot {
   name: string;
   fps: number;
   frames: Frame[];
+  sequenceInputs?: Frame[];
   source: MediaSource | null;
   workspace: ProjectWorkspace;
   loopCorrection?: LoopCorrectionProjectState | null;
   compression?: CompressionProjectState | null;
   smoothing?: SmoothingProjectState | null;
+  matting?: MattingProjectState | null;
 }
 export interface ProjectSummary {
   id: string;
@@ -50,11 +53,13 @@ interface ProjectManifest {
   name: string;
   fps: number;
   frames: StoredFrame[];
+  sequenceInputs?: StoredFrame[];
   source: (Omit<MediaSource, 'url'> & { file: string; type: string }) | null;
   workspace: ProjectWorkspace;
   loopCorrection?: (Omit<LoopCorrectionProjectState, 'frames'> & { frames: StoredFrame[] | null }) | null;
   compression?: (Omit<CompressionProjectState, 'sources' | 'results'> & { sources: StoredFrame[]; results: StoredFrame[] }) | null;
   smoothing?: (Omit<SmoothingProjectState, 'frames'> & { frames: StoredFrame[] | null }) | null;
+  matting?: (Omit<MattingProjectState, 'frames'> & { frames: StoredFrame[] | null }) | null;
 }
 
 const abortError = () => new DOMException('读取项目已取消', 'AbortError');
@@ -128,6 +133,8 @@ export async function saveProject(directory: string, snapshot: ProjectSnapshot, 
     manifest.source = { ...metadata, file, type };
   }
   if (snapshot.loopCorrection) manifest.loopCorrection = { ...snapshot.loopCorrection, frames: snapshot.loopCorrection.frames ? await storeFrames(snapshot.loopCorrection.frames, 'loop') : null };
+  if (snapshot.sequenceInputs) manifest.sequenceInputs = await storeFrames(snapshot.sequenceInputs, 'sequence-inputs');
+  if (snapshot.matting) manifest.matting = { ...snapshot.matting, frames: snapshot.matting.frames ? await storeFrames(snapshot.matting.frames, 'matting') : null };
   if (snapshot.compression) manifest.compression = { ...snapshot.compression, sources: await storeFrames(snapshot.compression.sources, 'compression/sources'), results: await storeFrames(snapshot.compression.results, 'compression/results') };
   if (snapshot.smoothing) manifest.smoothing = { ...snapshot.smoothing, frames: snapshot.smoothing.frames ? await storeFrames(snapshot.smoothing.frames, 'smoothing') : null };
   zip.file('project.json', JSON.stringify(manifest));
@@ -175,6 +182,7 @@ function workspace(value: unknown): ProjectWorkspace {
     stride: number(data.stride, 1, 1, 120, true), loopMode: data.loopMode === 'pingpong' || data.loopMode === 'once' ? data.loopMode : 'loop',
     sheetColumns: data.sheetColumns === 'auto' || data.sheetColumns === undefined ? 'auto' : number(data.sheetColumns, 1, 1, 400, true),
     ...(typeof data.sheetRows === 'number' ? { sheetRows: normalizeSheetDimension(data.sheetRows) } : {}),
+    ...(typeof data.sequenceMode === 'boolean' ? { sequenceMode: data.sequenceMode } : {}),
     ...(data.background === 'checker' || data.background === 'dark' || data.background === 'white' || data.background === 'rose' ? { background: data.background } : {}),
     ...(restoreTaskInfo(data.taskInfo) ? { taskInfo: restoreTaskInfo(data.taskInfo) } : {}),
   };
@@ -215,6 +223,8 @@ export async function loadProject(directory: string, id: string, signal?: AbortS
   }
   try {
     loaded.frames = restoreFrames(manifest.frames);
+    if (manifest.sequenceInputs) loaded.sequenceInputs = restoreFrames(manifest.sequenceInputs);
+    if (manifest.matting) loaded.matting = { options: restoreProcessOptions(manifest.matting.options), frames: manifest.matting.frames ? restoreFrames(manifest.matting.frames) : null };
     if (manifest.source) {
       const source = manifest.source;
       const blob = await readBlob(assetUrl(directory, id, source.file), signal); checkAbort(signal);
@@ -231,6 +241,7 @@ export async function loadProject(directory: string, id: string, signal?: AbortS
       const compression = manifest.compression;
       loaded.compression = { settings: compressionSettings(compression.settings), lastSettings: compression.lastSettings ? compressionSettings(compression.lastSettings) : null, sourceLabel: typeof compression.sourceLabel === 'string' ? compression.sourceLabel : '', fps: number(compression.fps, loaded.fps, 1, 60), sources: [], results: [] };
       loaded.compression.sources = await restoreCompression(compression.sources);
+      if (compression.sourceMode === 'workbench' || compression.sourceMode === 'local') loaded.compression.sourceMode = compression.sourceMode;
       loaded.compression.results = await restoreCompression(compression.results);
     }
     if (manifest.smoothing) {
@@ -249,6 +260,6 @@ export async function loadProject(directory: string, id: string, signal?: AbortS
 /** Use only when a loaded snapshot was not handed to the workspace and panels. */
 export function releaseLoadedProject(snapshot: ProjectSnapshot): void {
   if (snapshot.source) releaseMedia(snapshot.source);
-  const urls = new Set([snapshot.source?.url, ...snapshot.frames.map(frame => frame.url), ...(snapshot.loopCorrection?.frames ?? []).map(frame => frame.url), ...(snapshot.compression?.sources ?? []).map(frame => frame.url), ...(snapshot.compression?.results ?? []).map(frame => frame.url), ...(snapshot.smoothing?.frames ?? []).map(frame => frame.url)]);
+  const urls = new Set([snapshot.source?.url, ...snapshot.frames.map(frame => frame.url), ...(snapshot.sequenceInputs ?? []).map(frame => frame.url), ...(snapshot.matting?.frames ?? []).map(frame => frame.url), ...(snapshot.loopCorrection?.frames ?? []).map(frame => frame.url), ...(snapshot.compression?.sources ?? []).map(frame => frame.url), ...(snapshot.compression?.results ?? []).map(frame => frame.url), ...(snapshot.smoothing?.frames ?? []).map(frame => frame.url)]);
   for (const url of urls) if (url?.startsWith('blob:')) URL.revokeObjectURL(url);
 }

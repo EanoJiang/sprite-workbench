@@ -48,9 +48,9 @@ await page.route('**/api/tuner/start', route => {
 });
 
 const trigger = () => page.locator('#media-import-trigger');
-const namingDialog = () => page.getByRole('dialog', { name: '为动画片段命名', exact: true });
-const sourceName = () => page.locator('.file-details strong').innerText();
-const frameNames = () => page.locator('.frame-meta span').allTextContents();
+const namingDialog = () => page.locator('dialog.animation-name-dialog');
+const sourceName = () => page.locator('.source-header-file dd').innerText();
+const frameNames = () => page.locator('#step-3 .frame-meta span').allTextContents();
 const shot = async (filename, locator = page.locator('.hero')) => {
   const filenamePath = path.join(artifacts, filename);
   await locator.scrollIntoViewIfNeeded();
@@ -80,13 +80,13 @@ const waitSource = async (name, width, height, awaitingName = false) => {
   if (awaitingName) await expect(trigger()).toBeDisabled();
   else await expect(trigger()).toBeEnabled();
   await expect(page.locator('.file-details > span')).toContainText(`${width} × ${height}`);
-  await expect(page.locator('.frame-card')).toHaveCount(0);
+  await expect(page.locator('#step-3 .frame-card')).toHaveCount(0);
 };
 const blur = () => page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); });
 
 try {
   await page.goto(base, { waitUntil: 'networkidle' });
-  await expect(page.locator('.frame-card')).toHaveCount(builtInExample.frames.length, { timeout: 90000 });
+  await expect(page.locator('#step-3 .frame-card')).toHaveCount(builtInExample.frames.length, { timeout: 90000 });
   await expect(trigger()).toBeVisible();
   await expect(namingDialog()).toHaveCount(0);
 
@@ -117,9 +117,10 @@ try {
     await shot('import-hero-drag-desktop.png');
     const result = await dispatch('#media-import-trigger', 'drop', [image('button-dropped-image.png')]);
     expect(result.defaultPrevented).toBe(true);
-    await waitSource('button-dropped-image.png', 96, 64);
+    await waitSource('button-dropped-image.png', 96, 64, true);
     await expect(page.locator('.drop-overlay')).toHaveCount(0);
-    await expect(namingDialog()).toHaveCount(0);
+    await expect(namingDialog()).toBeVisible();
+    await namingDialog().getByRole('button', { name: '确认名称', exact: true }).click();
     return { source: await sourceName(), width: 96, height: 64 };
   });
 
@@ -132,7 +133,7 @@ try {
     const dialog = namingDialog();
     await expect(dialog).toBeVisible();
     await expect(dialog).toHaveJSProperty('open', true);
-    const input = dialog.getByRole('textbox', { name: '动画片段名', exact: true });
+    const input = dialog.getByRole('textbox', { name: /^(动画片段名|项目名)$/ });
     await expect(input).toBeFocused();
     await expect(input).toHaveValue('button-dropped-video');
     const confirm = dialog.getByRole('button', { name: '确认名称', exact: true });
@@ -157,7 +158,7 @@ try {
     await page.locator('#target-height').fill('64');
     await page.locator('.cleanup-controls input[role="switch"]').first().uncheck();
     await page.getByRole('button', { name: /^开始抽帧/ }).click();
-    await expect(page.locator('.frame-card')).toHaveCount(1, { timeout: 90000 });
+    await expect(page.locator('#step-3 .frame-card')).toHaveCount(1, { timeout: 90000 });
     const downloads = [];
     for (const [format, mode] of [
       ['sequence', 'frames'],
@@ -186,7 +187,7 @@ try {
     expect(result.defaultPrevented).toBe(true);
     await waitSource(pasted.name, 160, 96, true);
     const dialog = namingDialog();
-    const input = dialog.getByRole('textbox', { name: '动画片段名', exact: true });
+    const input = dialog.getByRole('textbox', { name: /^(动画片段名|项目名)$/ });
     await expect(dialog).toBeVisible();
     await expect(input).toBeFocused();
     await expect(input).toHaveValue('pasted-video');
@@ -219,8 +220,8 @@ try {
     await blur();
     const result = await dispatch('body', 'paste', [image('frame_10.png'), image('frame_2.png')]);
     expect(result.defaultPrevented).toBe(true);
-    await expect(page.locator('.frame-card')).toHaveCount(2);
-    await expect(page.locator('.frame-card input:checked')).toHaveCount(2);
+    await expect(page.locator('#step-3 .frame-card')).toHaveCount(2);
+    await expect(page.locator('#step-3 .frame-card input:checked')).toHaveCount(2);
     await expect(trigger()).toBeEnabled();
     expect(await frameNames()).toEqual(['frame_2.png', 'frame_10.png']);
     return { names: await frameNames(), selected: 2 };

@@ -54,7 +54,7 @@ const engines = [
   { mode: 'hybrid', index: 3, name: 'BiRefNet + CorridorKey' },
 ];
 const screenshot = async filename => {
-  const output = path.join(artifacts, filename); await page.locator('#step-3').screenshot({ path: output, animations: 'disabled' }); report.artifacts.push(output);
+  const output = path.join(artifacts, filename); await page.locator('#step-4').screenshot({ path: output, animations: 'disabled' }); report.artifacts.push(output);
 };
 
 try {
@@ -139,13 +139,13 @@ try {
         return { width: canvas.width, height: canvas.height, min, max, transparent, opaque };
       })));
       for (const frame of alpha) { expect(frame.min).toBe(0); expect(frame.max).toBe(255); expect(frame.transparent).toBeGreaterThan(100); expect(frame.opaque).toBeGreaterThan(100); expect(frame.height).toBe(160); }
-      const output = path.join(artifacts, 'ai-hybrid-batch-review.png'); await page.locator('#step-5').screenshot({ path: output, animations: 'disabled' }); report.artifacts.push(output);
+      const output = path.join(artifacts, 'ai-hybrid-batch-review.png'); await page.locator('#step-3').screenshot({ path: output, animations: 'disabled' }); report.artifacts.push(output);
       return { frames: 2, aiMatteRequests: requests.length, elapsedMs: Date.now() - started, alpha, requests: capturedRequests };
     });
   } else console.log('Inference skipped. Use --infer only when the local model slot is reserved.');
 
   await check('AI controls fit the 390px mobile viewport', async () => {
-    await page.setViewportSize({ width: 390, height: 844 }); await page.locator('#step-3').scrollIntoViewIfNeeded();
+    await page.setViewportSize({ width: 390, height: 844 }); await page.locator('#step-4').scrollIntoViewIfNeeded();
     const width = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth })); expect(width.document).toBeLessThanOrEqual(width.viewport + 1);
     await screenshot('ai-controls-mobile.png'); return width;
   });

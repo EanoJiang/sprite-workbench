@@ -142,10 +142,9 @@ try {
     await page.waitForTimeout(1000);
     expect(await range()).toEqual({ start: 30, end: 60 });
     await expect(page.locator('#loop-animation, #loop-range-status, .loop-range-controls')).toHaveCount(0);
-    await expect(page.locator('#loop-correction-enabled')).toBeVisible();
-    await expect(page.locator('#loop-correction-enabled')).not.toBeChecked();
+    await expect(page.locator('#loop-correction-enabled')).toHaveCount(0);
     await shot('manual-range-desktop.png');
-    return { ...await range(), stableAfterMs: 1000, automaticDetectionRemoved: true, correctionOptional: true };
+    return { ...await range(), stableAfterMs: 1000, automaticDetectionRemoved: true, correctionRemoved: true };
   });
   await record('single-image source disables both current-frame controls', async () => {
     const image = await page.evaluate(() => {

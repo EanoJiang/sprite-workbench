@@ -426,8 +426,8 @@ function outputSize(input: { width: number; height: number }, options: ProcessOp
   return { width, height, contentWidth, contentHeight, padding };
 }
 
-function layoutCanvas(input: HTMLCanvasElement, options: ProcessOptions): HTMLCanvasElement {
-  const size = outputSize(input, options);
+function layoutCanvas(input: HTMLCanvasElement, options: ProcessOptions, preserveCanvas = false): HTMLCanvasElement {
+  const size = preserveCanvas ? { width: input.width, height: input.height, contentWidth: input.width, contentHeight: input.height, padding: 0 } : outputSize(input, options);
   const output = canvas(size.width, size.height);
   const ctx = context(output);
   ctx.imageSmoothingEnabled = true;
@@ -464,14 +464,14 @@ function prepareMatteCanvas(input: HTMLCanvasElement, options: ProcessOptions, a
   return output;
 }
 
-export function processCanvas(input: HTMLCanvasElement, options: ProcessOptions): HTMLCanvasElement {
+export function processCanvas(input: HTMLCanvasElement, options: ProcessOptions, preserveCanvas = false): HTMLCanvasElement {
   const matte = options.removeBackground || options.watermarkRemoval ? prepareMatteCanvas(input, options, false, input) : input;
-  return layoutCanvas(matte, options);
+  return layoutCanvas(matte, options, preserveCanvas);
 }
 
 /** Finish an AI matte: source-based watermark detection, then resize and cleanup. */
-export function finalizeMatteCanvas(input: HTMLCanvasElement, options: ProcessOptions, rawInput = input): HTMLCanvasElement {
-  return layoutCanvas(prepareMatteCanvas(input, options, true, rawInput), options);
+export function finalizeMatteCanvas(input: HTMLCanvasElement, options: ProcessOptions, rawInput = input, preserveCanvas = false): HTMLCanvasElement {
+  return layoutCanvas(prepareMatteCanvas(input, options, true, rawInput), options, preserveCanvas);
 }
 
 export function canvasToBlob(input: HTMLCanvasElement): Promise<Blob> {

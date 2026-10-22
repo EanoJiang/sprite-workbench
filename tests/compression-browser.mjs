@@ -47,7 +47,7 @@ page.on('response', response => {
 });
 page.on('requestfailed', request => { if (request.failure()?.errorText !== 'net::ERR_ABORTED') report.networkFailures.push({ url: request.url(), failure: request.failure()?.errorText }); });
 page.on('dialog', dialog => dialog.accept());
-const panel = page.locator('#step-8');
+const panel = page.locator('#step-7');
 const generate = () => panel.getByRole('button', { name: /^生成对比/ });
 const metric = () => panel.locator('.compression-metrics');
 const output = () => panel.locator('.compression-output-image');
@@ -127,11 +127,11 @@ try {
       return { ...geometry, frames: demoSelectionCount, outputHeight: Math.round(demoHeight * 0.5) };
     });
   } else {
-  await record('eighth workflow step reads a separate snapshot of selected demonstration frames', async () => {
+  await record('seventh workflow step automatically loads selected demonstration frames', async () => {
     await expect(page.locator('.frame-card')).toHaveCount(builtInExample.frames.length, { timeout: 90000 });
-    await expect(page.locator('.workflow-nav .step')).toHaveCount(8);
+    await expect(page.locator('.workflow-nav .step')).toHaveCount(7);
     await page.getByRole('button', { name: '奇数帧', exact: true }).click();
-    await panel.getByRole('button', { name: /使用已选帧/ }).click();
+    await expect(panel.locator('.compression-source-copy > strong')).toHaveText(`${demoSelectionCount} 帧已载入`);
     await expect(metric()).toHaveAttribute('data-frame-count', String(demoSelectionCount));
     await expect(panel.locator('.compression-original-image')).toHaveJSProperty('naturalHeight', demoHeight);
     await expect(page.locator('.frame-card input:checked')).toHaveCount(demoSelectionCount);

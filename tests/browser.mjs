@@ -68,9 +68,9 @@ try {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(350);
   await shot(page, 'initial-desktop.png');
-  await shot(page, 'cleanup-demo.png', page.locator('#step-3'));
-  await shot(page, 'review-demo.png', page.locator('#step-5'));
-  await shot(page, 'animation-demo.png', page.locator('#step-6'));
+  await shot(page, 'cleanup-demo.png', page.locator('#step-4'));
+  await shot(page, 'review-demo.png', page.locator('#step-3'));
+  await shot(page, 'animation-demo.png', page.locator('#step-5'));
   await record('comparison preview fits image at default 100 percent zoom', async () => {
     const sizes = await page.locator('.image-content').evaluateAll(images => images.map(image => ({ imageHeight: image.getBoundingClientRect().height, viewportHeight: image.parentElement.clientHeight, imageWidth: image.getBoundingClientRect().width, viewportWidth: image.parentElement.clientWidth })));
     for (const size of sizes) { expect(size.imageHeight).toBeLessThanOrEqual(size.viewportHeight + 2); expect(size.imageWidth).toBeLessThanOrEqual(size.viewportWidth + 2); }
@@ -127,7 +127,7 @@ try {
       let sum = 0, count = 0; for (let i = 0; i < data.length; i += 4) if (data[i + 3] > 200) { sum += i / 4 % canvas.width; count++; } return sum / count;
     });
     expect(lastCentroid).toBeGreaterThan(pixels.centroidX + 30);
-    await shot(page, 'review-video.png', page.locator('#step-5'));
+    await shot(page, 'review-video.png', page.locator('#step-3'));
     return { frames: 6, ...pixels, lastCentroid };
   });
   await record('all, none, odd, even, invert frame selection', async () => {
@@ -179,9 +179,9 @@ try {
     await expect(page.locator('.animation-stage-stats')).toContainText('24 FPS');
     const playing = page.getByRole('button', { name: '暂停大图动画预览', exact: true }); if (await playing.count()) await playing.click();
     await expect(page.getByRole('button', { name: '播放大图动画预览', exact: true })).toBeVisible();
-    await page.locator('.frame-thumb').first().click(); await expect(page.getByRole('dialog', { name: /frame_001/ })).toBeVisible();
+    await page.locator('.frame-thumb').first().dblclick(); await expect(page.getByRole('dialog', { name: /frame_001/ })).toBeVisible();
     await page.keyboard.press('Escape'); await expect(page.locator('.inspect-modal')).toHaveCount(0);
-    await shot(page, 'animation-video.png', page.locator('#step-6'));
+    await shot(page, 'animation-video.png', page.locator('#step-5'));
     return { fps: 24, loopMode: 'pingpong', inspected: true };
   });
   await record('local transparent PNG sequence import', async () => {
@@ -198,7 +198,7 @@ try {
       const width = window.innerWidth; const offenders = Array.from(document.querySelectorAll('body *')).filter(element => { const bounds = element.getBoundingClientRect(); const style = getComputedStyle(element); return bounds.width > 0 && style.position !== 'fixed' && (bounds.right > width + 1 || bounds.left < -1) && !element.closest('.workflow-nav, .sequence-strip'); }).map(element => ({ tag: element.tagName, className: element.className, left: Math.round(element.getBoundingClientRect().left), right: Math.round(element.getBoundingClientRect().right) }));
       return { viewport: width, document: document.documentElement.scrollWidth, body: document.body.scrollWidth, offenders: offenders.slice(0, 25) };
     });
-    await shot(page, 'mobile-390.png'); await shot(page, 'mobile-cleanup.png', page.locator('#step-3')); await shot(page, 'mobile-review.png', page.locator('#step-5'));
+    await shot(page, 'mobile-390.png'); await shot(page, 'mobile-cleanup.png', page.locator('#step-4')); await shot(page, 'mobile-review.png', page.locator('#step-3'));
     expect(layout.document).toBeLessThanOrEqual(391); expect(layout.body).toBeLessThanOrEqual(391); return layout;
   });
   await record('no browser console or runtime errors', async () => { expect(report.pageErrors).toEqual([]); expect(report.consoleErrors).toEqual([]); return { consoleErrors: report.consoleErrors.length, runtimeErrors: report.pageErrors.length }; });

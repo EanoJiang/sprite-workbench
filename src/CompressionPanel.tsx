@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, CSSProperties, PointerEvent, RefObject } from 'react';
 import { ArrowDown, ArrowRight, Check, ChevronLeft, ChevronRight, CircleHelp, FolderOpen, ImagePlus, Layers3, LoaderCircle, Maximize2, Minus, Pause, Play, Plus, Scaling, ShieldCheck, SlidersHorizontal, Sparkles, X, ZoomIn } from 'lucide-react';
 import type { Frame } from './types';
-import { compressFrame, compressionResizeMode, compressionSettingsKey, defaultCompressionSettings, formatCompressionBytes, importCompressionFiles, releaseCompressionFrames, snapshotCompressionFrames } from './lib/compression';
+import { compressFrame, compressionResizeMode, compressionSettingsKey, compressionSourcesMatch, defaultCompressionSettings, formatCompressionBytes, importCompressionFiles, releaseCompressionFrames, snapshotCompressionFrames } from './lib/compression';
 import type { CompressedFrame, CompressionAlgorithm, CompressionSettings, CompressionSourceFrame } from './lib/compression';
 import ExportModes from './ExportModes';
 import { exportPreviewFrames } from './lib/previewExport';
@@ -15,7 +15,7 @@ interface Props {
   frames: Frame[];
   fps: number;
   animationName: string;
-  /** Same sprite-sheet column selection used by the step 05 preview. */
+  /** Same sprite-sheet column selection used by the step 03 preview. */
   sheetColumns: number | 'auto';
   sheetRows?: number;
   disabled?: boolean;
@@ -34,6 +34,7 @@ export default function CompressionPanel({ active, frames, fps, animationName, s
   const [settings, setSettings] = useState<CompressionSettings>(defaultCompressionSettings);
   const [lastSettings, setLastSettings] = useState<CompressionSettings | null>(null);
   const [sourceLabel, setSourceLabel] = useState('');
+  const [sourceMode, setSourceMode] = useState<'workbench' | 'local'>('workbench');
   const [frameRate, setFrameRate] = useState(clamp(fps, 1, 60));
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -51,12 +52,16 @@ export default function CompressionPanel({ active, frames, fps, animationName, s
   const jobVersionRef = useRef(0);
   const restoredKeyRef = useRef<number | null>(null);
   const restoredAtFpsRef = useRef<number | null>(null);
+  const autoAttemptKeyRef = useRef<string | null>(null);
+  const restoredWorkspaceRef = useRef<CompressionSourceFrame[] | null>(null);
   const mountedRef = useRef(true);
   const filesRef = useRef<HTMLInputElement>(null);
   const folderRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
   const busy = !!job;
   const blocked = busy || disabled;
+  const workspaceKey = useMemo(() => JSON.stringify(frames.map(frame => [frame.id, frame.url, frame.name, frame.sourceIndex, frame.time, frame.width, frame.height])), [frames]);
+  const pendingRestore = !!restoreState && restoredKeyRef.current !== restoreState.key;
   const previewSources = sources.length ? sources : frames;
   const currentIndex = Math.min(index, Math.max(0, previewSources.length - 1));
   const original = previewSources[currentIndex];
@@ -71,11 +76,11 @@ export default function CompressionPanel({ active, frames, fps, animationName, s
   useImperativeHandle(handleRef, () => ({
     getSnapshot: () => ({
       settings: { ...settings }, lastSettings: lastSettings ? { ...lastSettings } : null,
-      sourceLabel, fps: frameRate,
+      sourceLabel, sourceMode, fps: frameRate,
       sources: inputsRef.current.map(frame => ({ ...frame })),
       results: outputsRef.current.map(frame => ({ ...frame })),
     }),
-  }), [settings, lastSettings, sourceLabel, frameRate]);
+  }), [settings, lastSettings, sourceLabel, sourceMode, frameRate]);
 
   useEffect(() => {
     if (!restoreState || restoredKeyRef.current === restoreState.key) return;
@@ -85,7 +90,12 @@ export default function CompressionPanel({ active, frames, fps, animationName, s
     jobVersionRef.current++; abortRef.current?.abort(); abortRef.current = null; jobRef.current = false;
     setJob(null); setExportingSide(null); onBusyChange?.(false);
     const saved = restoreState.state;
+    const mode = saved.sourceMode ?? (saved.sources.length && !saved.sourceLabel.startsWith('工作台') ? 'local' : 'workbench');
+    setSourceMode(mode);
+    autoAttemptKeyRef.current = null;
     const nextSources = saved.sources.map(frame => ({ ...frame }));
+    // Validate against the final workspace frames after upstream restoration finishes.
+    restoredWorkspaceRef.current = mode === 'workbench' && nextSources.length ? nextSources : null;
     const nextResults = saved.results.map(frame => ({ ...frame }));
     const retainedUrls = new Set([...nextSources, ...nextResults].map(frame => frame.url));
     releaseCompressionFrames([...inputsRef.current, ...outputsRef.current].filter(frame => !retainedUrls.has(frame.url)));
@@ -94,13 +104,13 @@ export default function CompressionPanel({ active, frames, fps, animationName, s
     setSettings({ ...saved.settings }); setLastSettings(saved.lastSettings ? { ...saved.lastSettings } : null);
     setSourceLabel(saved.sourceLabel); setFrameRate(clamp(saved.fps, 1, 60));
     setIndex(0); setPan({ x: 0, y: 0 }); setError('');
-  }, [restoreState, onBusyChange, fps]);
+  }, [restoreState, onBusyChange, fps, frames, workspaceKey]);
 
   useEffect(() => {
     if (restoredAtFpsRef.current === fps) return;
     restoredAtFpsRef.current = null;
-    if (inputsRef.current.length === 0) setFrameRate(clamp(fps, 1, 60));
-  }, [fps]);
+    if (sourceMode === 'workbench' || inputsRef.current.length === 0) setFrameRate(clamp(fps, 1, 60));
+  }, [fps, sourceMode]);
 
   useEffect(() => {
     if (!active || !playing || previewSources.length < 2) return;
@@ -112,6 +122,7 @@ export default function CompressionPanel({ active, frames, fps, animationName, s
     mountedRef.current = true;
     return () => {
       mountedRef.current = false; jobVersionRef.current++; abortRef.current?.abort(); jobRef.current = false;
+      autoAttemptKeyRef.current = null;
       // Keep restored URLs alive when StrictMode replays effect setup and cleanup.
       queueMicrotask(() => {
         if (mountedRef.current) return;
@@ -138,6 +149,33 @@ export default function CompressionPanel({ active, frames, fps, animationName, s
     }
   }, [disabled, onBusyChange, onNotify]);
 
+  useEffect(() => {
+    if (!active || disabled || busy || pendingRestore || sourceMode !== 'workbench' || autoAttemptKeyRef.current === workspaceKey) return;
+    autoAttemptKeyRef.current = workspaceKey;
+    if (!frames.length) { restoredWorkspaceRef.current = null; replaceSources([], '工作台已选帧'); return; }
+    const snapshot = [...frames];
+    void runJob('import', '正在自动载入已选帧', async controller => {
+      const restored = restoredWorkspaceRef.current;
+      if (!restored) replaceSources([], '工作台已选帧');
+      let next: CompressionSourceFrame[] | null = null;
+      try {
+        next = await snapshotCompressionFrames(snapshot, (done, total) => { if (!controller.signal.aborted) setJob({ kind: 'import', label: '正在自动载入已选帧', done, total }); }, controller.signal);
+        const sameInputs = restored ? await compressionSourcesMatch(next, restored, controller.signal) : false;
+        if (controller.signal.aborted) throw new DOMException('已取消', 'AbortError');
+        if (sameInputs) releaseCompressionFrames(next);
+        else replaceSources(next, '工作台已选帧');
+        next = null; restoredWorkspaceRef.current = null;
+        setFrameRate(clamp(fps, 1, 60));
+      } catch (reason) {
+        if (next) releaseCompressionFrames(next);
+        if (mountedRef.current && restored && inputsRef.current === restored) {
+          restoredWorkspaceRef.current = null; replaceSources([], '工作台已选帧');
+        }
+        throw reason;
+      }
+    });
+  }, [active, disabled, busy, pendingRestore, sourceMode, workspaceKey, frames, fps, runJob]);
+
   function replaceSources(next: CompressionSourceFrame[], label: string) {
     releaseCompressionFrames(inputsRef.current); releaseCompressionFrames(outputsRef.current);
     inputsRef.current = next; outputsRef.current = [];
@@ -145,13 +183,15 @@ export default function CompressionPanel({ active, frames, fps, animationName, s
   }
 
   async function useSelectedFrames() {
-    if (!frames.length) return;
+    if (!frames.length || jobRef.current || disabled) return;
+    setSourceMode('workbench'); autoAttemptKeyRef.current = workspaceKey;
+    restoredWorkspaceRef.current = null;
     const snapshot = [...frames];
     await runJob('import', '正在读取工作台帧', async controller => {
       const next = await snapshotCompressionFrames(snapshot, (done, total) => { if (!controller.signal.aborted) setJob({ kind: 'import', label: '正在读取工作台帧', done, total }); }, controller.signal);
       if (controller.signal.aborted) { releaseCompressionFrames(next); return; }
-      replaceSources(next, '工作台已选帧快照'); setFrameRate(clamp(fps, 1, 60));
-      onNotify(`已独立载入 ${next.length} 帧，可以调整参数并生成对比。`);
+      replaceSources(next, '工作台已选帧'); setFrameRate(clamp(fps, 1, 60));
+      onNotify(`已同步 ${next.length} 帧，后续选择会自动更新。`);
     });
   }
 
@@ -161,6 +201,8 @@ export default function CompressionPanel({ active, frames, fps, animationName, s
     await runJob('import', '正在读取本地帧', async controller => {
       const next = await importCompressionFiles(files, frameRate, (done, total) => { if (!controller.signal.aborted) setJob({ kind: 'import', label: '正在读取本地帧', done, total }); }, controller.signal);
       if (controller.signal.aborted) { releaseCompressionFrames(next); return; }
+      setSourceMode('local');
+      restoredWorkspaceRef.current = null;
       replaceSources(next, files[0].webkitRelativePath ? files[0].webkitRelativePath.split('/')[0] : '本地动画帧');
       onNotify(`已按文件名顺序载入 ${next.length} 帧。`);
     });
@@ -185,7 +227,7 @@ export default function CompressionPanel({ active, frames, fps, animationName, s
           next.push(await compressFrame(source, requestedSettings, controller.signal));
         }
         if (controller.signal.aborted) throw new DOMException('已取消', 'AbortError');
-        if (candidates) { inputsRef.current = candidates; setSources(candidates); setSourceLabel('工作台已选帧快照'); candidates = null; }
+        if (candidates) { inputsRef.current = candidates; setSources(candidates); setSourceLabel('工作台已选帧'); candidates = null; }
         releaseCompressionFrames(outputsRef.current); outputsRef.current = next;
         setResults(next); setLastSettings(requestedSettings); setIndex(value => Math.min(value, next.length - 1));
         onNotify(`对比已生成，${next.length} 帧压缩结果可以检查与导出。`);

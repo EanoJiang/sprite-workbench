@@ -94,7 +94,7 @@ async function matteSmoothingFrame(enhanced: Blob, original: Blob, options: Proc
       const [enhancedCanvas, enhancedContext] = canvas(width, height);
       enhancedContext.drawImage(enhancedBitmap, 0, 0);
       // Opaque inputs still need the current matte, without another layout pass.
-      const processed = await processFrame(enhancedCanvas, { ...options, targetHeight: height, padding: 0, layout: 'original' }, signal);
+      const processed = await processFrame(enhancedCanvas, { ...options, targetHeight: height, padding: 0, layout: 'original' }, signal, true);
       checkAbort(signal);
       const [output, outputContext] = canvas(originalCanvas.width, originalCanvas.height);
       outputContext.drawImage(processed, 0, 0, width, height);

@@ -67,7 +67,7 @@ export default function TunerPanel({ active, frames, animationName, fps, onNotif
   }, [active, ensureStarted]);
 
   // The parent workbench must remain unlocked for the returned PNGs to enter
-  // step 06. The tuner surface still disables its own controls while a return
+  // step 05. The tuner surface still disables its own controls while a return
   // is in flight via `busy` below.
   useEffect(() => { onBusyChange?.(starting || transferring); }, [starting, transferring, onBusyChange]);
   useEffect(() => {
@@ -126,7 +126,7 @@ export default function TunerPanel({ active, frames, animationName, fps, onNotif
         returnRequest.current = null;
         void Promise.all(returned.map((frame, index) => dataUrlFile(frame.data, `${session.label || 'animation'}_frame_${String(index + 1).padStart(4, '0')}.png`)))
           .then(files => onReturnFrames(files, Number(data.fps) || session.fps || fps, session.label || animationName))
-          .then(() => onNotify(`已保存并返回 ${returned.length} 帧精调结果，正在打开第 6 步动画预览。`))
+          .then(() => onNotify(`已保存并返回 ${returned.length} 帧精调结果，正在打开第 5 步动画预览。`))
           .catch(error => onNotify(error instanceof Error ? error.message : '导入精调结果失败。'))
           .finally(() => { setReturning(false); setReturnProgress({ done: 0, total: 0 }); });
       } catch (error) {
@@ -194,8 +194,8 @@ export default function TunerPanel({ active, frames, animationName, fps, onNotif
   return <section className="tuner-workspace" hidden={!active} aria-label="XSXB 动画调参工作台">
     <div className="tuner-heading"><div><div className="eyebrow">FRAME TUNING · 动画后期工作台</div><h1>让每一帧，<span>恰到好处。</span></h1><p>调整位移、节奏与拖尾，打包可以直接使用的动画素材。</p></div><a className="tuner-source-link" href="https://github.com/sparklecatta-lang/XSXB-Frame-Tuner" target="_blank" rel="noreferrer"><Github size={15} /> XSXB Frame Tuner <ExternalLink size={12} /></a></div>
 
-      <div className="card tuner-transfer-bar"><span className="tuner-transfer-icon"><Layers3 size={22} /></span><div className="tuner-source-summary"><strong>{frames.length ? animationName || '未命名动画' : '从抽帧工作台，接着做下去'}</strong><p>{frames.length ? <><b>{frames.length}</b> 帧已选 <span>·</span> {fps} FPS <span>·</span> 保留透明通道与播放顺序</> : '先勾选动画帧，或在下方编辑器中打开已有项目。'}</p></div><div className="tuner-transfer-actions"><button className="button primary tuner-send-button" disabled={!current || current.frameCount < 1 || !current.loaded || busy || disabled} onClick={returnTunedFrames}>{returning ? `正在保存并返回 ${returnProgress.total ? `${returnProgress.done} / ${returnProgress.total}` : '…'}` : '保存精调结果返回 06 动画帧选取与预览'}{!returning && <ArrowRight size={14} />}</button></div></div>
-    <div className="tuner-persistence-note"><ShieldCheck size={12} /><span>每次发送创建独立调参项目，已有改动会保留。完成精调后点击上方按钮，会先保存再把结果带回第 06 步。</span></div>
+      <div className="card tuner-transfer-bar"><span className="tuner-transfer-icon"><Layers3 size={22} /></span><div className="tuner-source-summary"><strong>{frames.length ? animationName || '未命名动画' : '从抽帧工作台，接着做下去'}</strong><p>{frames.length ? <><b>{frames.length}</b> 帧已选 <span>·</span> {fps} FPS <span>·</span> 保留透明通道与播放顺序</> : '先勾选动画帧，或在下方编辑器中打开已有项目。'}</p></div><div className="tuner-transfer-actions"><button className="button primary tuner-send-button" disabled={!current || current.frameCount < 1 || !current.loaded || busy || disabled} onClick={returnTunedFrames}>{returning ? `正在保存并返回 ${returnProgress.total ? `${returnProgress.done} / ${returnProgress.total}` : '…'}` : '保存精调结果返回 05 动画帧选取与预览'}{!returning && <ArrowRight size={14} />}</button></div></div>
+    <div className="tuner-persistence-note"><ShieldCheck size={12} /><span>每次发送创建独立调参项目，已有改动会保留。完成精调后点击上方按钮，会先保存再把结果带回第 05 步。</span></div>
 
     {error && <div className="tuner-error" role="alert"><CircleAlert size={18} /><div><strong>暂时无法完成操作</strong><p>{error}</p></div><button className="button secondary small" disabled={busy} onClick={() => void ensureStarted().catch(reason => setError(reason instanceof Error ? reason.message : '启动失败，请重试。'))}><RefreshCw size={13} /> 重试连接</button></div>}
 

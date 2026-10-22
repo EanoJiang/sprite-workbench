@@ -14,6 +14,7 @@ export interface CompressionProjectState {
   settings: CompressionSettings;
   lastSettings: CompressionSettings | null;
   sourceLabel: string;
+  sourceMode?: 'workbench' | 'local';
   fps: number;
   sources: CompressionSourceFrame[];
   results: CompressedFrame[];
@@ -25,6 +26,11 @@ export interface CompressionProjectHandle { getSnapshot(): CompressionProjectSta
 export interface SmoothingProjectState {
   enabled: boolean;
   pipelineVersion?: number;
+  options: ProcessOptions;
+  frames: Frame[] | null;
+}
+
+export interface MattingProjectState {
   options: ProcessOptions;
   frames: Frame[] | null;
 }
